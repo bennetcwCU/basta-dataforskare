@@ -4,5 +4,7 @@ output: html_notebook
 ---
 
 ```{r}
+sept_raw <- here("202309-capitalbikeshare-tripdata.csv")
 
+rawbikedata <- read_csv(sept_raw)
 ```
