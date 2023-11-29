@@ -4,6 +4,14 @@ output: html_notebook
 ---
 
 ```{r}
+library(tidyverse)
+library(here)
+library(geojsonR)
+library(janitor)
+
+metro <- FROM_GeoJson(here('data_raw', 'Metro_Station_Entrances_in_DC.geojson'))
+metroRiders <- read.csv(here('data_raw', 'Boardings by Route Table_Full Data_data.csv'))
+
 sept_raw <- here("202309-capitalbikeshare-tripdata.csv")
 
 rawbikedata <- read_csv(sept_raw)
