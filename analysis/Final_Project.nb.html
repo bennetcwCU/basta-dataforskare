@@ -1499,6 +1499,8 @@ window.initializeCodeFolding = function(show) {
   // select all R code blocks
   var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
   rCodeBlocks.each(function() {
+    // skip if the block has fold-none class
+    if ($(this).hasClass('fold-none')) return;
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
@@ -1509,12 +1511,14 @@ window.initializeCodeFolding = function(show) {
     $(this).detach().appendTo(div);
 
     // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
     var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
     showCodeButton.append(showCodeText);
     showCodeButton
         .attr('data-toggle', 'collapse')
+        .attr('data-bs-toggle', 'collapse') // BS5
         .attr('data-target', '#' + id)
+        .attr('data-bs-target', '#' + id)   // BS5
         .attr('aria-expanded', showThis)
         .attr('aria-controls', id);
 
@@ -1533,7 +1537,7 @@ window.initializeCodeFolding = function(show) {
     //   * Change text
     //   * add a class for intermediate states styling
     div.on('hide.bs.collapse', function () {
-      showCodeText.text('Code');
+      showCodeText.text('Show');
       showCodeButton.addClass('btn-collapsing');
     });
     div.on('hidden.bs.collapse', function () {
@@ -1604,6 +1608,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 #rmd-source-code {
 display: none;
@@ -1634,6 +1639,9 @@ outline: none;
 }
 summary {
 display: list-item;
+}
+details > summary > p:only-child {
+display: inline;
 }
 pre code {
 padding: 0;
@@ -1674,23 +1682,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -1733,7 +1735,7 @@ display: none;
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -1750,16 +1752,97 @@ display: none;
 
 
 <!-- rnb-text-begin -->
+<div id="packages" class="section level2">
+<h2>Packages</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2VwdF9yYXcgPC0gaGVyZShcIjIwMjMwOS1jYXBpdGFsYmlrZXNoYXJlLXRyaXBkYXRhLmNzdlwiKVxuXG5yYXdiaWtlZGF0YSA8LSByZWFkX2NzdihzZXB0X3JhdylcbmBgYCJ9 -->
-<pre class="r"><code>sept_raw &lt;- here(&quot;202309-capitalbikeshare-tripdata.csv&quot;)
-
-rawbikedata &lt;- read_csv(sept_raw)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGhlcmUpXG5saWJyYXJ5KGdlb2pzb25SKVxubGlicmFyeShqYW5pdG9yKVxubGlicmFyeShrbml0cilcbmxpYnJhcnkobHVicmlkYXRlKSBcbmxpYnJhcnkobWFwdmlldylcbmxpYnJhcnkoZ2JmcylcbmxpYnJhcnkoc2YpIFxubGlicmFyeSh0bWFwKVxubGlicmFyeSh0aWR5Y2Vuc3VzKVxubGlicmFyeShkcGx5cilcbmBgYCJ9 -->
+<pre class="r"><code>library(tidyverse)
+library(here)
+library(geojsonR)
+library(janitor)
+library(knitr)
+library(lubridate) 
+library(mapview)
+library(gbfs)
+library(sf) 
+library(tmap)
+library(tidycensus)
+library(dplyr)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="reading-the-files." class="section level2">
+<h2>Reading the files.</h2>
+<p>Metro Station Entrances to map the location of metro, boarding data
+to show how many people are using the metro station, and bikeshare to
+show the number of people riding bikes.</p>
+<p>All data is from the month September because there are no major
+holidays, the weather is still decent enough for people to ride bikes,
+and the number of tourists/ pleasure bike riders are reduced.</p>
+<p>For the purpose of this project, we plan on focusing on the
+commuters, and plan on creating more bike locations to better suit the
+number of commuters.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm8gPC0gRlJPTV9HZW9Kc29uKGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb24nKSlcbm1ldHJvUmlkZXJzIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ0JvYXJkaW5ncyBieSBSb3V0ZSBUYWJsZV9GdWxsIERhdGFfZGF0YS5jc3YnKSlcblxuc2VwdF9yYXcgPC0gcmVhZF9jc3YoaGVyZSgnMjAyMzA5LWNhcGl0YWxiaWtlc2hhcmUtdHJpcGRhdGEuY3N2JykpXG5cbmBgYCJ9 -->
+<pre class="r"><code>metro &lt;- FROM_GeoJson(here(&#39;data_raw&#39;, &#39;Metro_Station_Entrances_in_DC.geojson&#39;))
+metroRiders &lt;- read.csv(here(&#39;data_raw&#39;, &#39;Boardings by Route Table_Full Data_data.csv&#39;))
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkZpbmFsIFByb2plY3QiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCnNlcHRfcmF3IDwtIGhlcmUoIjIwMjMwOS1jYXBpdGFsYmlrZXNoYXJlLXRyaXBkYXRhLmNzdiIpDQoNCnJhd2Jpa2VkYXRhIDwtIHJlYWRfY3N2KHNlcHRfcmF3KQ0KYGBgDQo=</div>
+sept_raw &lt;- read_csv(here(&#39;202309-capitalbikeshare-tripdata.csv&#39;))
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="cleaning-data" class="section level2">
+<h2>Cleaning Data</h2>
+<p>This filters the data so we are only getting entries for the weekdays
+and not the weekends.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm9SMSA8LSBtZXRyb1JpZGVycyB8PlxuICBmaWx0ZXIoU2VydmljZXR5cGUgPT0gXCJXZWVrZGF5XCIpIHw+XG4gIGdyb3VwX2J5KFN0YXRpb24pXG5cbmdsaW1wc2UobWV0cm9SMSlcblxuYGBgIn0= -->
+<pre class="r"><code>metroR1 &lt;- metroRiders |&gt;
+  filter(Servicetype == &quot;Weekday&quot;) |&gt;
+  group_by(Station)
+
+glimpse(metroR1)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="mapping-metro" class="section level2">
+<h2>Mapping Metro</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZW50cmFuY2VzPXN0X3JlYWQoaGVyZShcIk1ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb25cIikpICU+JSBjbGVhbl9uYW1lcygpXG5cbmNsYXNzKGVudHJhbmNlcylcblxucGxvdChlbnRyYW5jZXMpXG5gYGAifQ== -->
+<pre class="r"><code>entrances=st_read(here(&quot;Metro_Station_Entrances_in_DC.geojson&quot;)) %&gt;% clean_names()
+
+class(entrances)
+
+plot(entrances)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="mapping-bike-data" class="section level2">
+<h2>Mapping Bike Data</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQmlrZU1hcCA8LSBzdF9hc19zZihzZXB0X3Jhdyxjb29yZHMgPSBjKFwic3RhcnRfbG5nXCIsXCJzdGFydF9sYXRcIiksIGNycyA9IDQzMjYpXG5cbmNsYXNzKEJpa2VNYXApXG5tYXB2aWV3KEJpa2VNYXApXG5gYGAifQ== -->
+<pre class="r"><code>BikeMap &lt;- st_as_sf(sept_raw,coords = c(&quot;start_lng&quot;,&quot;start_lat&quot;), crs = 4326)
+
+class(BikeMap)
+mapview(BikeMap)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkZpbmFsIFByb2plY3QiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KIyMgUGFja2FnZXMNCmBgYHtyfQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGhlcmUpDQpsaWJyYXJ5KGdlb2pzb25SKQ0KbGlicmFyeShqYW5pdG9yKQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkobHVicmlkYXRlKSANCmxpYnJhcnkobWFwdmlldykNCmxpYnJhcnkoZ2JmcykNCmxpYnJhcnkoc2YpIA0KbGlicmFyeSh0bWFwKQ0KbGlicmFyeSh0aWR5Y2Vuc3VzKQ0KbGlicmFyeShkcGx5cikNCmBgYA0KDQoNCiMjIFJlYWRpbmcgdGhlIGZpbGVzLiANCg0KTWV0cm8gU3RhdGlvbiBFbnRyYW5jZXMgdG8gbWFwIHRoZSBsb2NhdGlvbiBvZiBtZXRybywgYm9hcmRpbmcgZGF0YSB0byBzaG93IGhvdyBtYW55IHBlb3BsZSBhcmUgdXNpbmcgdGhlIG1ldHJvIHN0YXRpb24sIGFuZCBiaWtlc2hhcmUgdG8gc2hvdyB0aGUgbnVtYmVyIG9mIHBlb3BsZSByaWRpbmcgYmlrZXMuDQoNCkFsbCBkYXRhIGlzIGZyb20gdGhlIG1vbnRoIFNlcHRlbWJlciBiZWNhdXNlIHRoZXJlIGFyZSBubyBtYWpvciBob2xpZGF5cywgdGhlIHdlYXRoZXIgaXMgc3RpbGwgZGVjZW50IGVub3VnaCBmb3IgcGVvcGxlIHRvIHJpZGUgYmlrZXMsIGFuZCB0aGUgbnVtYmVyIG9mIHRvdXJpc3RzLyBwbGVhc3VyZSBiaWtlIHJpZGVycyBhcmUgcmVkdWNlZC4gDQoNCkZvciB0aGUgcHVycG9zZSBvZiB0aGlzIHByb2plY3QsIHdlIHBsYW4gb24gZm9jdXNpbmcgb24gdGhlIGNvbW11dGVycywgYW5kIHBsYW4gb24gY3JlYXRpbmcgbW9yZSBiaWtlIGxvY2F0aW9ucyB0byBiZXR0ZXIgc3VpdCB0aGUgbnVtYmVyIG9mIGNvbW11dGVycy4NCmBgYHtyfQ0KbWV0cm8gPC0gRlJPTV9HZW9Kc29uKGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb24nKSkNCm1ldHJvUmlkZXJzIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ0JvYXJkaW5ncyBieSBSb3V0ZSBUYWJsZV9GdWxsIERhdGFfZGF0YS5jc3YnKSkNCg0Kc2VwdF9yYXcgPC0gcmVhZF9jc3YoaGVyZSgnMjAyMzA5LWNhcGl0YWxiaWtlc2hhcmUtdHJpcGRhdGEuY3N2JykpDQoNCmBgYA0KDQojIyBDbGVhbmluZyBEYXRhDQoNClRoaXMgZmlsdGVycyB0aGUgZGF0YSBzbyB3ZSBhcmUgb25seSBnZXR0aW5nIGVudHJpZXMgZm9yIHRoZSB3ZWVrZGF5cyBhbmQgbm90IHRoZSB3ZWVrZW5kcy4NCg0KYGBge3J9DQptZXRyb1IxIDwtIG1ldHJvUmlkZXJzIHw+DQogIGZpbHRlcihTZXJ2aWNldHlwZSA9PSAiV2Vla2RheSIpIHw+DQogIGdyb3VwX2J5KFN0YXRpb24pDQoNCmdsaW1wc2UobWV0cm9SMSkNCg0KYGBgDQoNCiMjIE1hcHBpbmcgTWV0cm8NCg0KYGBge3J9DQplbnRyYW5jZXM9c3RfcmVhZChoZXJlKCJNZXRyb19TdGF0aW9uX0VudHJhbmNlc19pbl9EQy5nZW9qc29uIikpICU+JSBjbGVhbl9uYW1lcygpDQoNCmNsYXNzKGVudHJhbmNlcykNCg0KcGxvdChlbnRyYW5jZXMpDQpgYGANCiMjIE1hcHBpbmcgQmlrZSBEYXRhDQoNCmBgYHtyfQ0KQmlrZU1hcCA8LSBzdF9hc19zZihzZXB0X3Jhdyxjb29yZHMgPSBjKCJzdGFydF9sbmciLCJzdGFydF9sYXQiKSwgY3JzID0gNDMyNikNCg0KY2xhc3MoQmlrZU1hcCkNCm1hcHZpZXcoQmlrZU1hcCkNCmBgYA0KDQo=</div>
 
 
 

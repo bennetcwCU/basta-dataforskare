@@ -2,17 +2,66 @@
 title: "Final Project"
 output: html_notebook
 ---
-
+## Packages
 ```{r}
 library(tidyverse)
 library(here)
 library(geojsonR)
 library(janitor)
+library(knitr)
+library(lubridate) 
+library(mapview)
+library(gbfs)
+library(sf) 
+library(tmap)
+library(tidycensus)
+library(dplyr)
+```
 
+
+## Reading the files. 
+
+Metro Station Entrances to map the location of metro, boarding data to show how many people are using the metro station, and bikeshare to show the number of people riding bikes.
+
+All data is from the month September because there are no major holidays, the weather is still decent enough for people to ride bikes, and the number of tourists/ pleasure bike riders are reduced. 
+
+For the purpose of this project, we plan on focusing on the commuters, and plan on creating more bike locations to better suit the number of commuters.
+```{r}
 metro <- FROM_GeoJson(here('data_raw', 'Metro_Station_Entrances_in_DC.geojson'))
 metroRiders <- read.csv(here('data_raw', 'Boardings by Route Table_Full Data_data.csv'))
 
-sept_raw <- here("202309-capitalbikeshare-tripdata.csv")
+sept_raw <- read_csv(here('202309-capitalbikeshare-tripdata.csv'))
 
-rawbikedata <- read_csv(sept_raw)
 ```
+
+## Cleaning Data
+
+This filters the data so we are only getting entries for the weekdays and not the weekends.
+
+```{r}
+metroR1 <- metroRiders |>
+  filter(Servicetype == "Weekday") |>
+  group_by(Station)
+
+glimpse(metroR1)
+
+```
+
+## Mapping Metro
+
+```{r}
+entrances=st_read(here("Metro_Station_Entrances_in_DC.geojson")) %>% clean_names()
+
+class(entrances)
+
+plot(entrances)
+```
+## Mapping Bike Data
+
+```{r}
+BikeMap <- st_as_sf(sept_raw,coords = c("start_lng","start_lat"), crs = 4326)
+
+class(BikeMap)
+mapview(BikeMap)
+```
+
