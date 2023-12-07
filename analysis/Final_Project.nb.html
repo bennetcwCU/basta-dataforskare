@@ -1756,8 +1756,9 @@ display: none;
 <h2>Packages</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGhlcmUpXG5saWJyYXJ5KGdlb2pzb25SKVxubGlicmFyeShqYW5pdG9yKVxubGlicmFyeShrbml0cilcbmxpYnJhcnkobHVicmlkYXRlKSBcbmxpYnJhcnkobWFwdmlldylcbmxpYnJhcnkoZ2JmcylcbmxpYnJhcnkoc2YpIFxubGlicmFyeSh0bWFwKVxubGlicmFyeSh0aWR5Y2Vuc3VzKVxubGlicmFyeShkcGx5cilcbmBgYCJ9 -->
-<pre class="r"><code>library(tidyverse)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShwbHlyKVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGhlcmUpXG5saWJyYXJ5KGdlb2pzb25SKVxubGlicmFyeShqYW5pdG9yKVxubGlicmFyeShrbml0cilcbmxpYnJhcnkobHVicmlkYXRlKSBcbmxpYnJhcnkobWFwdmlldylcbmxpYnJhcnkoZ2JmcylcbmxpYnJhcnkoc2YpIFxubGlicmFyeSh0bWFwKVxubGlicmFyeSh0aWR5Y2Vuc3VzKVxubGlicmFyeShkcGx5cilcbmxpYnJhcnkoY29uZmxpY3RlZClcbmNvbmZsaWN0c19wcmVmZXIoaGVyZTo6aGVyZSlcbmBgYCJ9 -->
+<pre class="r"><code>library(plyr)
+library(tidyverse)
 library(here)
 library(geojsonR)
 library(janitor)
@@ -1768,8 +1769,25 @@ library(gbfs)
 library(sf) 
 library(tmap)
 library(tidycensus)
-library(dplyr)</code></pre>
+library(dplyr)
+library(conflicted)
+conflicts_prefer(here::here)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiW2NvbmZsaWN0ZWRdIFJlbW92aW5nIGV4aXN0aW5nIHByZWZlcmVuY2UuW2NvbmZsaWN0ZWRdIFdpbGwgcHJlZmVyIGhlcmU6OmhlcmUgb3ZlciBhbnkgb3RoZXIgcGFja2FnZS5cbiJ9 -->
+<pre><code>[conflicted] Removing existing preference.[conflicted] Will prefer here::here over any other package.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uZmxpY3RzX3ByZWZlcihkcGx5cjo6cmVuYW1lKVxuYGBgIn0= -->
+<pre class="r"><code>conflicts_prefer(dplyr::rename)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiW2NvbmZsaWN0ZWRdIFJlbW92aW5nIGV4aXN0aW5nIHByZWZlcmVuY2UuW2NvbmZsaWN0ZWRdIFdpbGwgcHJlZmVyIGRwbHlyOjpyZW5hbWUgb3ZlciBhbnkgb3RoZXIgcGFja2FnZS5cbiJ9 -->
+<pre><code>[conflicted] Removing existing preference.[conflicted] Will prefer dplyr::rename over any other package.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uZmxpY3RzX3ByZWZlcihkcGx5cjo6ZmlsdGVyKVxuYGBgIn0= -->
+<pre class="r"><code>conflicts_prefer(dplyr::filter)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiW2NvbmZsaWN0ZWRdIFdpbGwgcHJlZmVyIGRwbHlyOjpmaWx0ZXIgb3ZlciBhbnkgb3RoZXIgcGFja2FnZS5cbiJ9 -->
+<pre><code>[conflicted] Will prefer dplyr::filter over any other package.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1786,11 +1804,12 @@ commuters, and plan on creating more bike locations to better suit the
 number of commuters.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm8gPC0gRlJPTV9HZW9Kc29uKGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb24nKSlcbm1ldHJvUmlkZXJzIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ0JvYXJkaW5ncyBieSBSb3V0ZSBUYWJsZV9GdWxsIERhdGFfZGF0YS5jc3YnKSlcblxuc2VwdF9yYXcgPC0gcmVhZF9jc3YoaGVyZSgnMjAyMzA5LWNhcGl0YWxiaWtlc2hhcmUtdHJpcGRhdGEuY3N2JykpXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm8gPC0gRlJPTV9HZW9Kc29uKGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb24nKSlcbm1ldHJvUmlkZXJzIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ0JvYXJkaW5ncyBieSBSb3V0ZSBUYWJsZV9GdWxsIERhdGFfZGF0YS5jc3YnKSlcbm1ldHJvTG9jIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25zX1JlZ2lvbmFsLmNzdicpKSBcblxuc2VwdF9yYXcgPC0gcmVhZF9jc3YoaGVyZSgnZGF0YV9yYXcnLCAnMjAyMzA5LWNhcGl0YWxiaWtlc2hhcmUtdHJpcGRhdGEuY3N2JykpXG5cbmBgYCJ9 -->
 <pre class="r"><code>metro &lt;- FROM_GeoJson(here(&#39;data_raw&#39;, &#39;Metro_Station_Entrances_in_DC.geojson&#39;))
 metroRiders &lt;- read.csv(here(&#39;data_raw&#39;, &#39;Boardings by Route Table_Full Data_data.csv&#39;))
+metroLoc &lt;- read.csv(here(&#39;data_raw&#39;, &#39;Metro_Stations_Regional.csv&#39;)) 
 
-sept_raw &lt;- read_csv(here(&#39;202309-capitalbikeshare-tripdata.csv&#39;))
+sept_raw &lt;- read_csv(here(&#39;data_raw&#39;, &#39;202309-capitalbikeshare-tripdata.csv&#39;))
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -1799,17 +1818,38 @@ sept_raw &lt;- read_csv(here(&#39;202309-capitalbikeshare-tripdata.csv&#39;))
 <div id="cleaning-data" class="section level2">
 <h2>Cleaning Data</h2>
 <p>This filters the data so we are only getting entries for the weekdays
-and not the weekends.</p>
+and not the weekends, appending location variables to station names, and
+combining repeat stations with a summed amount of entries.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm9SMSA8LSBtZXRyb1JpZGVycyB8PlxuICBmaWx0ZXIoU2VydmljZXR5cGUgPT0gXCJXZWVrZGF5XCIpIHw+XG4gIGdyb3VwX2J5KFN0YXRpb24pXG5cbmdsaW1wc2UobWV0cm9SMSlcblxuYGBgIn0= -->
-<pre class="r"><code>metroR1 &lt;- metroRiders |&gt;
-  filter(Servicetype == &quot;Weekday&quot;) |&gt;
-  group_by(Station)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm9BZGR5IDwtIHN1YnNldChtZXRyb0xvYywgc2VsZWN0ID0gYyhOQU1FLCBBRERSRVNTLCBYLCBZKSl8PlxuICByZW5hbWUoXCJTdGF0aW9uXCIgPSBcIk5BTUVcIiwgXCJMb25cIiA9IFwiWFwiLCBcIkxhdFwiID0gXCJZXCIpXG5cbm1ldHJvUmlkZXJzJFRpbWUuUGVyaW9kID0gTlVMTFxubWV0cm9SaWRlcnMkRGF5Lm9mLldlZWsgPSBOVUxMXG5tZXRyb1JpZGVycyRIb2xpZGF5ID0gTlVMTFxubWV0cm9SaWRlcnMkTW9udGggPSBOVUxMXG5tZXRyb1JpZGVycyRZZWFyID0gTlVMTFxubWV0cm9SaWRlcnMkQXZnLkRhaWx5LkVudHJpZXMuUm91bmRlZCA9IE5VTExcblxubWV0cm9SMSA8LSBtZXRyb1JpZGVycyB8PlxuICBmaWx0ZXIoU2VydmljZXR5cGUgPT0gXCJXZWVrZGF5XCIpIHw+XG4gIGRkcGx5KFwiU3RhdGlvblwiLCBudW1jb2x3aXNlKHN1bSkpXG5cbk1FVFJPIDwtIG1lcmdlKHggPSBtZXRyb1IxLCB5ID0gbWV0cm9BZGR5LCBieSA9IFwiU3RhdGlvblwiKVxuXG5nbGltcHNlKE1FVFJPKVxuYGBgIn0= -->
+<pre class="r"><code>metroAddy &lt;- subset(metroLoc, select = c(NAME, ADDRESS, X, Y))|&gt;
+  rename(&quot;Station&quot; = &quot;NAME&quot;, &quot;Lon&quot; = &quot;X&quot;, &quot;Lat&quot; = &quot;Y&quot;)
 
-glimpse(metroR1)
-</code></pre>
+metroRiders$Time.Period = NULL
+metroRiders$Day.of.Week = NULL
+metroRiders$Holiday = NULL
+metroRiders$Month = NULL
+metroRiders$Year = NULL
+metroRiders$Avg.Daily.Entries.Rounded = NULL
+
+metroR1 &lt;- metroRiders |&gt;
+  filter(Servicetype == &quot;Weekday&quot;) |&gt;
+  ddply(&quot;Station&quot;, numcolwise(sum))
+
+METRO &lt;- merge(x = metroR1, y = metroAddy, by = &quot;Station&quot;)
+
+glimpse(METRO)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogODZcbkNvbHVtbnM6IDVcbiQgU3RhdGlvbiA8Y2hyPiBcIkFuYWNvc3RpYVwiLCBcIkFybGluZ3RvbiBDZW1ldGVyeVwiLCBcIkFzaGJ1cm5cIiwgXCJCYWxsc3Rvbi1NVVwiLCBcIkJlbm5pbmcgUm9hZFwiLCBcIkJldGhlc2RhXCIsIFwiQnJhZGRvY2sgUm9hZFwiLCBcIkJyYW5jaCBBdmVcIiwgXCJCcm9va2xhbmQtQ1VBXCIsIFwiQ2FwaXRvbCBIZWlnaHRzXCIsIFwiQ2FwaXRvbCBTb3V0aFwiLCBcIkNoZeKAplxuJCBFbnRyaWVzIDxpbnQ+IDYyMzY1LCAxNjExMSwgMjUxOTksIDExNDg3NSwgMzE1MTgsIDEwMjkzMywgNDU2MzgsIDQ3NjQ0LCA4NTE0MSwgMjM2MzAsIDEwMTYwNCwgMTAwMzIsIDU3MDQyLCA0NzUwMCwgMzczNDMsIDE1NDM4NywgNDI0NzUsIDc2MjMxLCAxMDg0MTUsIDE1ODIzLCA0MTc0MCwgMTk5MzU4LCA1MjM2MiwgNjkwMzksIDI0NOKAplxuJCBBRERSRVNTIDxjaHI+IFwiMTEwMSBIT1dBUkQgUk9BRCBTRSwgV0FTSElOR1RPTiwgRENcIiwgXCIxMDAwIE5PUlRIIE1FTU9SSUFMIERSSVZFLCBBUkxJTkdUT04sIFZBXCIsIFwiNDM2MjUtQSBDUk9TT04gTE4sIEFTSEJVUk4sIFZBIDIwMTQ3XCIsIFwiNDIzMCBGQUlSRkFYIERSSVZFLCBBUkxJTkdUT04sIFZBXCIsIFwiNDUwMCBDRU5UUkFMIEFWReKAplxuJCBMb24gICAgIDxkYmw+IC03Ni45OTUzNywgLTc3LjA2MjgxLCAtNzcuNDkxNTQsIC03Ny4xMTMxNywgLTc2LjkzODM3LCAtNzcuMDk0MTMsIC03Ny4wNTM2NywgLTc2LjkxMTQ3LCAtNzYuOTk0NTQsIC03Ni45MTE4MSwgLTc3LjAwNTE0LCAtNzYuOTE2NjMsIC03Ny4wOTU0MCwgLTc3LjA1ODA0LCAtNzYuOTI4MTMsIC03Ny4wMzI1NSwgLeKAplxuJCBMYXQgICAgIDxkYmw+IDM4Ljg2Mjk3LCAzOC44ODQ2OSwgMzkuMDA1MjksIDM4Ljg4MjE5LCAzOC44OTA5OCwgMzguOTg0NDAsIDM4LjgxNDE1LCAzOC44MjY0NSwgMzguOTMzMjIsIDM4Ljg4OTQ3LCAzOC44ODUwNywgMzguOTE2NjQsIDM4Ljg4NjcxLCAzOC45MzQ3NywgMzguOTc4NjQsIDM4LjkyNzg1LCAzOC44NDU2NywgMzguODkwMeKAplxuIn0= -->
+<pre><code>Rows: 86
+Columns: 5
+$ Station &lt;chr&gt; &quot;Anacostia&quot;, &quot;Arlington Cemetery&quot;, &quot;Ashburn&quot;, &quot;Ballston-MU&quot;, &quot;Benning Road&quot;, &quot;Bethesda&quot;, &quot;Braddock Road&quot;, &quot;Branch Ave&quot;, &quot;Brookland-CUA&quot;, &quot;Capitol Heights&quot;, &quot;Capitol South&quot;, &quot;Che…
+$ Entries &lt;int&gt; 62365, 16111, 25199, 114875, 31518, 102933, 45638, 47644, 85141, 23630, 101604, 10032, 57042, 47500, 37343, 154387, 42475, 76231, 108415, 15823, 41740, 199358, 52362, 69039, 244…
+$ ADDRESS &lt;chr&gt; &quot;1101 HOWARD ROAD SE, WASHINGTON, DC&quot;, &quot;1000 NORTH MEMORIAL DRIVE, ARLINGTON, VA&quot;, &quot;43625-A CROSON LN, ASHBURN, VA 20147&quot;, &quot;4230 FAIRFAX DRIVE, ARLINGTON, VA&quot;, &quot;4500 CENTRAL AVE…
+$ Lon     &lt;dbl&gt; -76.99537, -77.06281, -77.49154, -77.11317, -76.93837, -77.09413, -77.05367, -76.91147, -76.99454, -76.91181, -77.00514, -76.91663, -77.09540, -77.05804, -76.92813, -77.03255, -…
+$ Lat     &lt;dbl&gt; 38.86297, 38.88469, 39.00529, 38.88219, 38.89098, 38.98440, 38.81415, 38.82645, 38.93322, 38.88947, 38.88507, 38.91664, 38.88671, 38.93477, 38.97864, 38.92785, 38.84567, 38.8901…</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1817,32 +1857,46 @@ glimpse(metroR1)
 <h2>Mapping Metro</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZW50cmFuY2VzPXN0X3JlYWQoaGVyZShcIk1ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb25cIikpICU+JSBjbGVhbl9uYW1lcygpXG5cbmNsYXNzKGVudHJhbmNlcylcblxucGxvdChlbnRyYW5jZXMpXG5gYGAifQ== -->
-<pre class="r"><code>entrances=st_read(here(&quot;Metro_Station_Entrances_in_DC.geojson&quot;)) %&gt;% clean_names()
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZW50cmFuY2VzPXN0X3JlYWQoaGVyZShcXE1ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb25cXCkpICU+JSBjbGVhbl9uYW1lcygpXG5cbmNsYXNzKGVudHJhbmNlcylcblxucGxvdChlbnRyYW5jZXMpXG5gYGBcbmBgYCJ9 -->
+<pre class="r"><code>```r
+entrances=st_read(here(\Metro_Station_Entrances_in_DC.geojson\)) %&gt;% clean_names()
 
 class(entrances)
 
 plot(entrances)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="mapping-bike-data" class="section level2">
-<h2>Mapping Bike Data</h2>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQmlrZU1hcCA8LSBzdF9hc19zZihzZXB0X3Jhdyxjb29yZHMgPSBjKFwic3RhcnRfbG5nXCIsXCJzdGFydF9sYXRcIiksIGNycyA9IDQzMjYpXG5cbmNsYXNzKEJpa2VNYXApXG5tYXB2aWV3KEJpa2VNYXApXG5gYGAifQ== -->
-<pre class="r"><code>BikeMap &lt;- st_as_sf(sept_raw,coords = c(&quot;start_lng&quot;,&quot;start_lat&quot;), crs = 4326)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+## Mapping Bike Data
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuQmlrZU1hcCA8LSBzdF9hc19zZihzZXB0X3Jhdyxjb29yZHMgPSBjKFxcc3RhcnRfbG5nXFwsXFxzdGFydF9sYXRcXCksIGNycyA9IDQzMjYpXG5cbmNsYXNzKEJpa2VNYXApXG5tYXB2aWV3KEJpa2VNYXApXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+BikeMap &lt;- st_as_sf(sept_raw,coords = c(\start_lng\,\start_lat\), crs = 4326)
 
 class(BikeMap)
 mapview(BikeMap)</code></pre>
+<p>```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkZpbmFsIFByb2plY3QiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KIyMgUGFja2FnZXMNCmBgYHtyfQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGhlcmUpDQpsaWJyYXJ5KGdlb2pzb25SKQ0KbGlicmFyeShqYW5pdG9yKQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkobHVicmlkYXRlKSANCmxpYnJhcnkobWFwdmlldykNCmxpYnJhcnkoZ2JmcykNCmxpYnJhcnkoc2YpIA0KbGlicmFyeSh0bWFwKQ0KbGlicmFyeSh0aWR5Y2Vuc3VzKQ0KbGlicmFyeShkcGx5cikNCmBgYA0KDQoNCiMjIFJlYWRpbmcgdGhlIGZpbGVzLiANCg0KTWV0cm8gU3RhdGlvbiBFbnRyYW5jZXMgdG8gbWFwIHRoZSBsb2NhdGlvbiBvZiBtZXRybywgYm9hcmRpbmcgZGF0YSB0byBzaG93IGhvdyBtYW55IHBlb3BsZSBhcmUgdXNpbmcgdGhlIG1ldHJvIHN0YXRpb24sIGFuZCBiaWtlc2hhcmUgdG8gc2hvdyB0aGUgbnVtYmVyIG9mIHBlb3BsZSByaWRpbmcgYmlrZXMuDQoNCkFsbCBkYXRhIGlzIGZyb20gdGhlIG1vbnRoIFNlcHRlbWJlciBiZWNhdXNlIHRoZXJlIGFyZSBubyBtYWpvciBob2xpZGF5cywgdGhlIHdlYXRoZXIgaXMgc3RpbGwgZGVjZW50IGVub3VnaCBmb3IgcGVvcGxlIHRvIHJpZGUgYmlrZXMsIGFuZCB0aGUgbnVtYmVyIG9mIHRvdXJpc3RzLyBwbGVhc3VyZSBiaWtlIHJpZGVycyBhcmUgcmVkdWNlZC4gDQoNCkZvciB0aGUgcHVycG9zZSBvZiB0aGlzIHByb2plY3QsIHdlIHBsYW4gb24gZm9jdXNpbmcgb24gdGhlIGNvbW11dGVycywgYW5kIHBsYW4gb24gY3JlYXRpbmcgbW9yZSBiaWtlIGxvY2F0aW9ucyB0byBiZXR0ZXIgc3VpdCB0aGUgbnVtYmVyIG9mIGNvbW11dGVycy4NCmBgYHtyfQ0KbWV0cm8gPC0gRlJPTV9HZW9Kc29uKGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb24nKSkNCm1ldHJvUmlkZXJzIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ0JvYXJkaW5ncyBieSBSb3V0ZSBUYWJsZV9GdWxsIERhdGFfZGF0YS5jc3YnKSkNCg0Kc2VwdF9yYXcgPC0gcmVhZF9jc3YoaGVyZSgnMjAyMzA5LWNhcGl0YWxiaWtlc2hhcmUtdHJpcGRhdGEuY3N2JykpDQoNCmBgYA0KDQojIyBDbGVhbmluZyBEYXRhDQoNClRoaXMgZmlsdGVycyB0aGUgZGF0YSBzbyB3ZSBhcmUgb25seSBnZXR0aW5nIGVudHJpZXMgZm9yIHRoZSB3ZWVrZGF5cyBhbmQgbm90IHRoZSB3ZWVrZW5kcy4NCg0KYGBge3J9DQptZXRyb1IxIDwtIG1ldHJvUmlkZXJzIHw+DQogIGZpbHRlcihTZXJ2aWNldHlwZSA9PSAiV2Vla2RheSIpIHw+DQogIGdyb3VwX2J5KFN0YXRpb24pDQoNCmdsaW1wc2UobWV0cm9SMSkNCg0KYGBgDQoNCiMjIE1hcHBpbmcgTWV0cm8NCg0KYGBge3J9DQplbnRyYW5jZXM9c3RfcmVhZChoZXJlKCJNZXRyb19TdGF0aW9uX0VudHJhbmNlc19pbl9EQy5nZW9qc29uIikpICU+JSBjbGVhbl9uYW1lcygpDQoNCmNsYXNzKGVudHJhbmNlcykNCg0KcGxvdChlbnRyYW5jZXMpDQpgYGANCiMjIE1hcHBpbmcgQmlrZSBEYXRhDQoNCmBgYHtyfQ0KQmlrZU1hcCA8LSBzdF9hc19zZihzZXB0X3Jhdyxjb29yZHMgPSBjKCJzdGFydF9sbmciLCJzdGFydF9sYXQiKSwgY3JzID0gNDMyNikNCg0KY2xhc3MoQmlrZU1hcCkNCm1hcHZpZXcoQmlrZU1hcCkNCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkZpbmFsIFByb2plY3QiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KIyMgUGFja2FnZXMNCmBgYHtyfQ0KbGlicmFyeShwbHlyKQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGhlcmUpDQpsaWJyYXJ5KGdlb2pzb25SKQ0KbGlicmFyeShqYW5pdG9yKQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkobHVicmlkYXRlKSANCmxpYnJhcnkobWFwdmlldykNCmxpYnJhcnkoZ2JmcykNCmxpYnJhcnkoc2YpIA0KbGlicmFyeSh0bWFwKQ0KbGlicmFyeSh0aWR5Y2Vuc3VzKQ0KbGlicmFyeShkcGx5cikNCmxpYnJhcnkoY29uZmxpY3RlZCkNCmNvbmZsaWN0c19wcmVmZXIoaGVyZTo6aGVyZSkNCmNvbmZsaWN0c19wcmVmZXIoZHBseXI6OnJlbmFtZSkNCmNvbmZsaWN0c19wcmVmZXIoZHBseXI6OmZpbHRlcikNCg0KYGBgDQoNCg0KIyMgUmVhZGluZyB0aGUgZmlsZXMuIA0KDQpNZXRybyBTdGF0aW9uIEVudHJhbmNlcyB0byBtYXAgdGhlIGxvY2F0aW9uIG9mIG1ldHJvLCBib2FyZGluZyBkYXRhIHRvIHNob3cgaG93IG1hbnkgcGVvcGxlIGFyZSB1c2luZyB0aGUgbWV0cm8gc3RhdGlvbiwgYW5kIGJpa2VzaGFyZSB0byBzaG93IHRoZSBudW1iZXIgb2YgcGVvcGxlIHJpZGluZyBiaWtlcy4NCg0KQWxsIGRhdGEgaXMgZnJvbSB0aGUgbW9udGggU2VwdGVtYmVyIGJlY2F1c2UgdGhlcmUgYXJlIG5vIG1ham9yIGhvbGlkYXlzLCB0aGUgd2VhdGhlciBpcyBzdGlsbCBkZWNlbnQgZW5vdWdoIGZvciBwZW9wbGUgdG8gcmlkZSBiaWtlcywgYW5kIHRoZSBudW1iZXIgb2YgdG91cmlzdHMvIHBsZWFzdXJlIGJpa2UgcmlkZXJzIGFyZSByZWR1Y2VkLiANCg0KRm9yIHRoZSBwdXJwb3NlIG9mIHRoaXMgcHJvamVjdCwgd2UgcGxhbiBvbiBmb2N1c2luZyBvbiB0aGUgY29tbXV0ZXJzLCBhbmQgcGxhbiBvbiBjcmVhdGluZyBtb3JlIGJpa2UgbG9jYXRpb25zIHRvIGJldHRlciBzdWl0IHRoZSBudW1iZXIgb2YgY29tbXV0ZXJzLg0KYGBge3J9DQptZXRybyA8LSBGUk9NX0dlb0pzb24oaGVyZSgnZGF0YV9yYXcnLCAnTWV0cm9fU3RhdGlvbl9FbnRyYW5jZXNfaW5fREMuZ2VvanNvbicpKQ0KbWV0cm9SaWRlcnMgPC0gcmVhZC5jc3YoaGVyZSgnZGF0YV9yYXcnLCAnQm9hcmRpbmdzIGJ5IFJvdXRlIFRhYmxlX0Z1bGwgRGF0YV9kYXRhLmNzdicpKQ0KbWV0cm9Mb2MgPC0gcmVhZC5jc3YoaGVyZSgnZGF0YV9yYXcnLCAnTWV0cm9fU3RhdGlvbnNfUmVnaW9uYWwuY3N2JykpIA0KDQpzZXB0X3JhdyA8LSByZWFkX2NzdihoZXJlKCdkYXRhX3JhdycsICcyMDIzMDktY2FwaXRhbGJpa2VzaGFyZS10cmlwZGF0YS5jc3YnKSkNCg0KYGBgDQoNCiMjIENsZWFuaW5nIERhdGENCg0KVGhpcyBmaWx0ZXJzIHRoZSBkYXRhIHNvIHdlIGFyZSBvbmx5IGdldHRpbmcgZW50cmllcyBmb3IgdGhlIHdlZWtkYXlzIGFuZCBub3QgdGhlIHdlZWtlbmRzLCBhcHBlbmRpbmcgbG9jYXRpb24gdmFyaWFibGVzIHRvIHN0YXRpb24gbmFtZXMsIGFuZCBjb21iaW5pbmcgcmVwZWF0IHN0YXRpb25zIHdpdGggYSBzdW1tZWQgYW1vdW50IG9mIGVudHJpZXMuDQoNCmBgYHtyfQ0KbWV0cm9BZGR5IDwtIHN1YnNldChtZXRyb0xvYywgc2VsZWN0ID0gYyhOQU1FLCBBRERSRVNTLCBYLCBZKSl8Pg0KICByZW5hbWUoIlN0YXRpb24iID0gIk5BTUUiLCAiTG9uIiA9ICJYIiwgIkxhdCIgPSAiWSIpDQoNCm1ldHJvUmlkZXJzJFRpbWUuUGVyaW9kID0gTlVMTA0KbWV0cm9SaWRlcnMkRGF5Lm9mLldlZWsgPSBOVUxMDQptZXRyb1JpZGVycyRIb2xpZGF5ID0gTlVMTA0KbWV0cm9SaWRlcnMkTW9udGggPSBOVUxMDQptZXRyb1JpZGVycyRZZWFyID0gTlVMTA0KbWV0cm9SaWRlcnMkQXZnLkRhaWx5LkVudHJpZXMuUm91bmRlZCA9IE5VTEwNCg0KbWV0cm9SMSA8LSBtZXRyb1JpZGVycyB8Pg0KICBmaWx0ZXIoU2VydmljZXR5cGUgPT0gIldlZWtkYXkiKSB8Pg0KICBkZHBseSgiU3RhdGlvbiIsIG51bWNvbHdpc2Uoc3VtKSkNCg0KTUVUUk8gPC0gbWVyZ2UoeCA9IG1ldHJvUjEsIHkgPSBtZXRyb0FkZHksIGJ5ID0gIlN0YXRpb24iKQ0KDQpnbGltcHNlKE1FVFJPKQ0KDQpgYGANCg0KIyMgTWFwcGluZyBNZXRybw0KDQpgYGB7cn0NCmVudHJhbmNlcz1zdF9yZWFkKGhlcmUoIk1ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb24iKSkgJT4lIGNsZWFuX25hbWVzKCkNCg0KY2xhc3MoZW50cmFuY2VzKQ0KDQpwbG90KGVudHJhbmNlcykNCmBgYA0KIyMgTWFwcGluZyBCaWtlIERhdGENCg0KYGBge3J9DQpCaWtlTWFwIDwtIHN0X2FzX3NmKHNlcHRfcmF3LGNvb3JkcyA9IGMoInN0YXJ0X2xuZyIsInN0YXJ0X2xhdCIpLCBjcnMgPSA0MzI2KQ0KDQpjbGFzcyhCaWtlTWFwKQ0KbWFwdmlldyhCaWtlTWFwKQ0KYGBgDQoNCg==</div>
 
 
 
