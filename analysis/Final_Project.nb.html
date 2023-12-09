@@ -1752,56 +1752,234 @@ display: none;
 
 
 <!-- rnb-text-begin -->
+<div id="packages" class="section level2">
+<h2>Packages</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShwbHlyKVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGhlcmUpXG5saWJyYXJ5KGdlb2pzb25SKVxubGlicmFyeShqYW5pdG9yKVxuXG5cbiNtZXRybyA8LSBGUk9NX0dlb0pzb24oaGVyZSgnZGF0YV9yYXcnLCAnTWV0cm9fU3RhdGlvbl9FbnRyYW5jZXNfaW5fREMuZ2VvanNvbicpKVxubWV0cmlMb2NhdGlvbiA8LSByZWFkLmNzdihoZXJlKCdkYXRhX3JhdycsICdNZXRyb19TdGF0aW9uc19SZWdpb25hbC5jc3YnKSlcbm1ldHJvUmlkZXJzIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ0JvYXJkaW5ncyBieSBSb3V0ZSBUYWJsZV9GdWxsIERhdGFfZGF0YS5jc3YnKSl8PlxuICByZWxvY2F0ZShFbnRyaWVzLCAuYWZ0ZXIgPSBTdGF0aW9uKVxuXG5zZXB0X3JhdyA8LSBoZXJlKCdkYXRhX3JhdycsICcyMDIzMDktY2FwaXRhbGJpa2VzaGFyZS10cmlwZGF0YS5jc3YnKVxuXG5yYXdiaWtlZGF0YSA8LSByZWFkLmNzdihzZXB0X3JhdylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShwbHlyKVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGhlcmUpXG5saWJyYXJ5KGdlb2pzb25SKVxubGlicmFyeShqYW5pdG9yKVxubGlicmFyeShrbml0cilcbmxpYnJhcnkobHVicmlkYXRlKSBcbmxpYnJhcnkobWFwdmlldylcbmxpYnJhcnkoZ2JmcylcbmxpYnJhcnkoc2YpIFxubGlicmFyeSh0bWFwKVxubGlicmFyeSh0aWR5Y2Vuc3VzKVxubGlicmFyeShkcGx5cilcbmxpYnJhcnkoY29uZmxpY3RlZClcbmNvbmZsaWN0c19wcmVmZXIoaGVyZTo6aGVyZSlcbmBgYCJ9 -->
 <pre class="r"><code>library(plyr)
 library(tidyverse)
 library(here)
 library(geojsonR)
 library(janitor)
-
-
-#metro &lt;- FROM_GeoJson(here(&#39;data_raw&#39;, &#39;Metro_Station_Entrances_in_DC.geojson&#39;))
-metriLocation &lt;- read.csv(here(&#39;data_raw&#39;, &#39;Metro_Stations_Regional.csv&#39;))
-metroRiders &lt;- read.csv(here(&#39;data_raw&#39;, &#39;Boardings by Route Table_Full Data_data.csv&#39;))|&gt;
-  relocate(Entries, .after = Station)
-
-sept_raw &lt;- here(&#39;data_raw&#39;, &#39;202309-capitalbikeshare-tripdata.csv&#39;)
-
-rawbikedata &lt;- read.csv(sept_raw)</code></pre>
+library(knitr)
+library(lubridate) 
+library(mapview)
+library(gbfs)
+library(sf) 
+library(tmap)
+library(tidycensus)
+library(dplyr)
+library(conflicted)
+conflicts_prefer(here::here)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiW2NvbmZsaWN0ZWRdIFJlbW92aW5nIGV4aXN0aW5nIHByZWZlcmVuY2UuW2NvbmZsaWN0ZWRdIFdpbGwgcHJlZmVyIGhlcmU6OmhlcmUgb3ZlciBhbnkgb3RoZXIgcGFja2FnZS5cbiJ9 -->
+<pre><code>[conflicted] Removing existing preference.[conflicted] Will prefer here::here over any other package.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uZmxpY3RzX3ByZWZlcihkcGx5cjo6cmVuYW1lKVxuYGBgIn0= -->
+<pre class="r"><code>conflicts_prefer(dplyr::rename)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiW2NvbmZsaWN0ZWRdIFJlbW92aW5nIGV4aXN0aW5nIHByZWZlcmVuY2UuW2NvbmZsaWN0ZWRdIFdpbGwgcHJlZmVyIGRwbHlyOjpyZW5hbWUgb3ZlciBhbnkgb3RoZXIgcGFja2FnZS5cbiJ9 -->
+<pre><code>[conflicted] Removing existing preference.[conflicted] Will prefer dplyr::rename over any other package.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uZmxpY3RzX3ByZWZlcihkcGx5cjo6ZmlsdGVyKVxuYGBgIn0= -->
+<pre class="r"><code>conflicts_prefer(dplyr::filter)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiW2NvbmZsaWN0ZWRdIFJlbW92aW5nIGV4aXN0aW5nIHByZWZlcmVuY2UuW2NvbmZsaWN0ZWRdIFdpbGwgcHJlZmVyIGRwbHlyOjpmaWx0ZXIgb3ZlciBhbnkgb3RoZXIgcGFja2FnZS5cbiJ9 -->
+<pre><code>[conflicted] Removing existing preference.[conflicted] Will prefer dplyr::filter over any other package.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uZmxpY3RzX3ByZWZlcihkcGx5cjo6bXV0YXRlKVxuYGBgIn0= -->
+<pre class="r"><code>conflicts_prefer(dplyr::mutate)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiW2NvbmZsaWN0ZWRdIFdpbGwgcHJlZmVyIGRwbHlyOjptdXRhdGUgb3ZlciBhbnkgb3RoZXIgcGFja2FnZS5cbiJ9 -->
+<pre><code>[conflicted] Will prefer dplyr::mutate over any other package.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>##metro data cleaning</p>
+</div>
+<div id="reading-the-files." class="section level2">
+<h2>Reading the files.</h2>
+<p>Metro Station Entrances to map the location of metro, boarding data
+to show how many people are using the metro station, and bikeshare to
+show the number of people riding bikes.</p>
+<p>All data is from the month September because there are no major
+holidays, the weather is still decent enough for people to ride bikes,
+and the number of tourists/ pleasure bike riders are reduced.</p>
+<p>For the purpose of this project, we plan on focusing on the
+commuters, and plan on creating more bike locations to better suit the
+number of commuters.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm9SaWRlcnMkVGltZS5QZXJpb2QgPSBOVUxMXG5tZXRyb1JpZGVycyREYXkub2YuV2VlayA9IE5VTExcbm1ldHJvUmlkZXJzJEhvbGlkYXkgPSBOVUxMXG5tZXRyb1JpZGVycyRNb250aCA9IE5VTExcbm1ldHJvUmlkZXJzJFllYXIgPSBOVUxMXG5tZXRyb1JpZGVycyRBdmcuRGFpbHkuRW50cmllcy5Sb3VuZGVkID0gTlVMTFxuXG5tZXRyb0ZpbHRlciA9IG1ldHJvUmlkZXJzJT4lXG4gIGZpbHRlcihTZXJ2aWNldHlwZSA9PSAnV2Vla2RheScpJT4lXG4gIGRkcGx5KFwiU3RhdGlvblwiLCBudW1jb2x3aXNlKHN1bSkpXG5cblxuXG5cblxuXG5cbiAgXG4gIFxuYGBgIn0= -->
-<pre class="r"><code>metroRiders$Time.Period = NULL
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm8gPC0gRlJPTV9HZW9Kc29uKGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb24nKSlcbm1ldHJvUmlkZXJzIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ0JvYXJkaW5ncyBieSBSb3V0ZSBUYWJsZV9GdWxsIERhdGFfZGF0YS5jc3YnKSlcbm1ldHJvTG9jIDwtIHJlYWQuY3N2KGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25zX1JlZ2lvbmFsLmNzdicpKSBcblxuc2VwdF9yYXcgPC0gcmVhZF9jc3YoaGVyZSgnZGF0YV9yYXcnLCAnMjAyMzA5LWNhcGl0YWxiaWtlc2hhcmUtdHJpcGRhdGEuY3N2JykpXG5gYGAifQ== -->
+<pre class="r"><code>metro &lt;- FROM_GeoJson(here(&#39;data_raw&#39;, &#39;Metro_Station_Entrances_in_DC.geojson&#39;))
+metroRiders &lt;- read.csv(here(&#39;data_raw&#39;, &#39;Boardings by Route Table_Full Data_data.csv&#39;))
+metroLoc &lt;- read.csv(here(&#39;data_raw&#39;, &#39;Metro_Stations_Regional.csv&#39;)) 
+
+sept_raw &lt;- read_csv(here(&#39;data_raw&#39;, &#39;202309-capitalbikeshare-tripdata.csv&#39;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNDUwMDkwIENvbHVtbnM6IDEz4pSA4pSAIENvbHVtbiBzcGVjaWZpY2F0aW9uIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgFxuRGVsaW1pdGVyOiBcIixcIlxuY2hyICAoNSk6IHJpZGVfaWQsIHJpZGVhYmxlX3R5cGUsIHN0YXJ0X3N0YXRpb25fbmFtZSwgZW5kX3N0YXRpb25fbmFtZSwgbWVtYmVyX2Nhc3VhbFxuZGJsICAoNik6IHN0YXJ0X3N0YXRpb25faWQsIGVuZF9zdGF0aW9uX2lkLCBzdGFydF9sYXQsIHN0YXJ0X2xuZywgZW5kX2xhdCwgZW5kX2xuZ1xuZHR0bSAoMik6IHN0YXJ0ZWRfYXQsIGVuZGVkX2F0XG7ihLkgVXNlIGBzcGVjKClgIHRvIHJldHJpZXZlIHRoZSBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGRhdGEuXG7ihLkgU3BlY2lmeSB0aGUgY29sdW1uIHR5cGVzIG9yIHNldCBgc2hvd19jb2xfdHlwZXMgPSBGQUxTRWAgdG8gcXVpZXQgdGhpcyBtZXNzYWdlLlxuIn0= -->
+<pre><code>Rows: 450090 Columns: 13── Column specification ─────────────────────────────────────────────────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (5): ride_id, rideable_type, start_station_name, end_station_name, member_casual
+dbl  (6): start_station_id, end_station_id, start_lat, start_lng, end_lat, end_lng
+dttm (2): started_at, ended_at
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmVpZ2ggPSBzdF9yZWFkKGhlcmUoXCJkYXRhX3Jhd1wiLCBcIkRDX0hlYWx0aF9QbGFubmluZ19OZWlnaGJvcmhvb2RzLmdlb2pzb25cIikpICU+JSBjbGVhbl9uYW1lcygpXG5gYGAifQ== -->
+<pre class="r"><code>neigh = st_read(here(&quot;data_raw&quot;, &quot;DC_Health_Planning_Neighborhoods.geojson&quot;)) %&gt;% clean_names()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgRENfSGVhbHRoX1BsYW5uaW5nX05laWdoYm9yaG9vZHMnIGZyb20gZGF0YSBzb3VyY2UgXG4gIGBDOlxcREFUQVNDSUVOQ0VcXGJhc3RhLWRhdGFmb3Jza2FyZVxcZGF0YV9yYXdcXERDX0hlYWx0aF9QbGFubmluZ19OZWlnaGJvcmhvb2RzLmdlb2pzb24nIHVzaW5nIGRyaXZlciBgR2VvSlNPTidcblNpbXBsZSBmZWF0dXJlIGNvbGxlY3Rpb24gd2l0aCA1MSBmZWF0dXJlcyBhbmQgOCBmaWVsZHNcbkdlb21ldHJ5IHR5cGU6IFBPTFlHT05cbkRpbWVuc2lvbjogICAgIFhZXG5Cb3VuZGluZyBib3g6ICB4bWluOiAtNzcuMTE5NzYgeW1pbjogMzguNzkxNjUgeG1heDogLTc2LjkwOTQgeW1heDogMzguOTk1NTZcbkdlb2RldGljIENSUzogIFdHUyA4NFxuIn0= -->
+<pre><code>Reading layer `DC_Health_Planning_Neighborhoods&#39; from data source 
+  `C:\DATASCIENCE\basta-dataforskare\data_raw\DC_Health_Planning_Neighborhoods.geojson&#39; using driver `GeoJSON&#39;
+Simple feature collection with 51 features and 8 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: -77.11976 ymin: 38.79165 xmax: -76.9094 ymax: 38.99556
+Geodetic CRS:  WGS 84</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="cleaning-data" class="section level2">
+<h2>Cleaning Data</h2>
+<p>This filters the data so we are only getting entries for the weekdays
+and not the weekends, appending location variables to station names, and
+combining repeat stations with a summed amount of entries.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0cm9BZGR5IDwtIHN1YnNldChtZXRyb0xvYywgc2VsZWN0ID0gYyhOQU1FLCBBRERSRVNTLCBYLCBZKSl8PlxuICByZW5hbWUoXCJTdGF0aW9uXCIgPSBcIk5BTUVcIiwgXCJMb25cIiA9IFwiWFwiLCBcIkxhdFwiID0gXCJZXCIpXG5cbm1ldHJvUmlkZXJzJFRpbWUuUGVyaW9kID0gTlVMTFxubWV0cm9SaWRlcnMkRGF5Lm9mLldlZWsgPSBOVUxMXG5tZXRyb1JpZGVycyRIb2xpZGF5ID0gTlVMTFxubWV0cm9SaWRlcnMkTW9udGggPSBOVUxMXG5tZXRyb1JpZGVycyRZZWFyID0gTlVMTFxubWV0cm9SaWRlcnMkQXZnLkRhaWx5LkVudHJpZXMuUm91bmRlZCA9IE5VTExcblxubWV0cm9SMSA8LSBtZXRyb1JpZGVycyB8PlxuICBmaWx0ZXIoU2VydmljZXR5cGUgPT0gXCJXZWVrZGF5XCIpIHw+XG4gIGRkcGx5KFwiU3RhdGlvblwiLCBudW1jb2x3aXNlKHN1bSkpXG5cbk1FVFJPIDwtIG1lcmdlKHggPSBtZXRyb1IxLCB5ID0gbWV0cm9BZGR5LCBieSA9IFwiU3RhdGlvblwiKVxuXG5nbGltcHNlKE1FVFJPKVxuYGBgIn0= -->
+<pre class="r"><code>metroAddy &lt;- subset(metroLoc, select = c(NAME, ADDRESS, X, Y))|&gt;
+  rename(&quot;Station&quot; = &quot;NAME&quot;, &quot;Lon&quot; = &quot;X&quot;, &quot;Lat&quot; = &quot;Y&quot;)
+
+metroRiders$Time.Period = NULL
 metroRiders$Day.of.Week = NULL
 metroRiders$Holiday = NULL
 metroRiders$Month = NULL
 metroRiders$Year = NULL
 metroRiders$Avg.Daily.Entries.Rounded = NULL
 
-metroFilter = metroRiders%&gt;%
-  filter(Servicetype == &#39;Weekday&#39;)%&gt;%
+metroR1 &lt;- metroRiders |&gt;
+  filter(Servicetype == &quot;Weekday&quot;) |&gt;
   ddply(&quot;Station&quot;, numcolwise(sum))
 
+METRO &lt;- merge(x = metroR1, y = metroAddy, by = &quot;Station&quot;)
+
+glimpse(METRO)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogODZcbkNvbHVtbnM6IDVcbiQgU3RhdGlvbiA8Y2hyPiBcIkFuYWNvc3RpYVwiLCBcIkFybGluZ3RvbiBDZW1ldGVyeVwiLCBcIkFzaGJ1cm5cIiwgXCJCYWxsc3Rvbi1NVVwiLCBcIkJlbm5pbmcgUm9hZFwiLCBcIkJldGhlc2RhXCIsIFwiQnJhZGRvY2sgUm9hZFwiLCBcIuKAplxuJCBFbnRyaWVzIDxpbnQ+IDYyMzY1LCAxNjExMSwgMjUxOTksIDExNDg3NSwgMzE1MTgsIDEwMjkzMywgNDU2MzgsIDQ3NjQ0LCA4NTE0MSwgMjM2MzAsIDEwMTYwNCwgMTAwMzIsIDU3MDQyLCA0NzUwMCwgMzczNDMs4oCmXG4kIEFERFJFU1MgPGNocj4gXCIxMTAxIEhPV0FSRCBST0FEIFNFLCBXQVNISU5HVE9OLCBEQ1wiLCBcIjEwMDAgTk9SVEggTUVNT1JJQUwgRFJJVkUsIEFSTElOR1RPTiwgVkFcIiwgXCI0MzYyNS1BIENST1NPTiBMTiwgQVNIQuKAplxuJCBMb24gICAgIDxkYmw+IC03Ni45OTUzNywgLTc3LjA2MjgxLCAtNzcuNDkxNTQsIC03Ny4xMTMxNywgLTc2LjkzODM3LCAtNzcuMDk0MTMsIC03Ny4wNTM2NywgLTc2LjkxMTQ3LCAtNzYuOTk0NTQsIC03Ni45MTE44oCmXG4kIExhdCAgICAgPGRibD4gMzguODYyOTcsIDM4Ljg4NDY5LCAzOS4wMDUyOSwgMzguODgyMTksIDM4Ljg5MDk4LCAzOC45ODQ0MCwgMzguODE0MTUsIDM4LjgyNjQ1LCAzOC45MzMyMiwgMzguODg5NDcsIDM4Ljg4NTDigKZcbiJ9 -->
+<pre><code>Rows: 86
+Columns: 5
+$ Station &lt;chr&gt; &quot;Anacostia&quot;, &quot;Arlington Cemetery&quot;, &quot;Ashburn&quot;, &quot;Ballston-MU&quot;, &quot;Benning Road&quot;, &quot;Bethesda&quot;, &quot;Braddock Road&quot;, &quot;…
+$ Entries &lt;int&gt; 62365, 16111, 25199, 114875, 31518, 102933, 45638, 47644, 85141, 23630, 101604, 10032, 57042, 47500, 37343,…
+$ ADDRESS &lt;chr&gt; &quot;1101 HOWARD ROAD SE, WASHINGTON, DC&quot;, &quot;1000 NORTH MEMORIAL DRIVE, ARLINGTON, VA&quot;, &quot;43625-A CROSON LN, ASHB…
+$ Lon     &lt;dbl&gt; -76.99537, -77.06281, -77.49154, -77.11317, -76.93837, -77.09413, -77.05367, -76.91147, -76.99454, -76.9118…
+$ Lat     &lt;dbl&gt; 38.86297, 38.88469, 39.00529, 38.88219, 38.89098, 38.98440, 38.81415, 38.82645, 38.93322, 38.88947, 38.8850…</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Cleaning bike data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmlrZVIxID0gc2VwdF9yYXcgJT4lIHNlbGVjdChzdGFydGVkX2F0LCBzdGFydF9sYXQsIHN0YXJ0X2xuZykgJT4lIG5hLm9taXQoKSAlPiUgbXV0YXRlKHN0YXJ0X2RhdGU9YXMuRGF0ZShzdGFydGVkX2F0KSkgJT4lIHNlbGVjdChzdGFydF9kYXRlLCBzdGFydF9sYXQsIHN0YXJ0X2xuZylcblxuYmlrZVIyID0gYmlrZVIxICU+JSBzdF9hc19zZihjb29yZHM9YyhcInN0YXJ0X2xuZ1wiLCBcInN0YXJ0X2xhdFwiKSwgY3JzPTQzMjYpXG5cbnN0X2NycyhuZWlnaCRnZW9tZXRyeVsxXSlcbmBgYCJ9 -->
+<pre class="r"><code>bikeR1 = sept_raw %&gt;% select(started_at, start_lat, start_lng) %&gt;% na.omit() %&gt;% mutate(start_date=as.Date(started_at)) %&gt;% select(start_date, start_lat, start_lng)
+
+bikeR2 = bikeR1 %&gt;% st_as_sf(coords=c(&quot;start_lng&quot;, &quot;start_lat&quot;), crs=4326)
+
+st_crs(neigh$geometry[1])</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ29vcmRpbmF0ZSBSZWZlcmVuY2UgU3lzdGVtOlxuICBVc2VyIGlucHV0OiBXR1MgODQgXG4gIHdrdDpcbkdFT0dDUlNbXCJXR1MgODRcIixcbiAgICBEQVRVTVtcIldvcmxkIEdlb2RldGljIFN5c3RlbSAxOTg0XCIsXG4gICAgICAgIEVMTElQU09JRFtcIldHUyA4NFwiLDYzNzgxMzcsMjk4LjI1NzIyMzU2MyxcbiAgICAgICAgICAgIExFTkdUSFVOSVRbXCJtZXRyZVwiLDFdXV0sXG4gICAgUFJJTUVNW1wiR3JlZW53aWNoXCIsMCxcbiAgICAgICAgQU5HTEVVTklUW1wiZGVncmVlXCIsMC4wMTc0NTMyOTI1MTk5NDMzXV0sXG4gICAgQ1NbZWxsaXBzb2lkYWwsMl0sXG4gICAgICAgIEFYSVNbXCJnZW9kZXRpYyBsYXRpdHVkZSAoTGF0KVwiLG5vcnRoLFxuICAgICAgICAgICAgT1JERVJbMV0sXG4gICAgICAgICAgICBBTkdMRVVOSVRbXCJkZWdyZWVcIiwwLjAxNzQ1MzI5MjUxOTk0MzNdXSxcbiAgICAgICAgQVhJU1tcImdlb2RldGljIGxvbmdpdHVkZSAoTG9uKVwiLGVhc3QsXG4gICAgICAgICAgICBPUkRFUlsyXSxcbiAgICAgICAgICAgIEFOR0xFVU5JVFtcImRlZ3JlZVwiLDAuMDE3NDUzMjkyNTE5OTQzM11dLFxuICAgIElEW1wiRVBTR1wiLDQzMjZdXVxuIn0= -->
+<pre><code>Coordinate Reference System:
+  User input: WGS 84 
+  wkt:
+GEOGCRS[&quot;WGS 84&quot;,
+    DATUM[&quot;World Geodetic System 1984&quot;,
+        ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+            LENGTHUNIT[&quot;metre&quot;,1]]],
+    PRIMEM[&quot;Greenwich&quot;,0,
+        ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS[&quot;geodetic latitude (Lat)&quot;,north,
+            ORDER[1],
+            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+        AXIS[&quot;geodetic longitude (Lon)&quot;,east,
+            ORDER[2],
+            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+    ID[&quot;EPSG&quot;,4326]]</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmlrZVIzID0gYmlrZVIyICU+JSBzdF9qb2luKG5laWdoKVxuXG5cbiBcbiNjb2RlIGZvciBwb3NzaWJsZSBmdXR1cmUgbWFwcGluZyBcbiNkZjFfc19zZiA9IGRmMV9zICU+JSBzdF9hc19zZihjb29yZHMgPWMoXCJzdGFydF9sbmdcIiwgXCJzdGFydF9sYXRcIiksIGNycyA9IDQzMjYpXG5gYGAifQ== -->
+<pre class="r"><code>bikeR3 = bikeR2 %&gt;% st_join(neigh)
 
 
-
-
-
-
-  
-  </code></pre>
+ 
+#code for possible future mapping 
+#df1_s_sf = df1_s %&gt;% st_as_sf(coords =c(&quot;start_lng&quot;, &quot;start_lat&quot;), crs = 4326)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTWV0cm9NYXAgPC0gc3RfYXNfc2YoTUVUUk8sIGNvb3JkcyA9IGMoXCJMb25cIiwgXCJMYXRcIiksIGNycyA9NDMyNilcblxuTWV0cm9NYXAyIDwtIE1ldHJvTWFwICU+JVxuICBzdF9qb2luKG5laWdoKVxuYGBgIn0= -->
+<pre class="r"><code>MetroMap &lt;- st_as_sf(METRO, coords = c(&quot;Lon&quot;, &quot;Lat&quot;), crs =4326)
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkZpbmFsIFByb2plY3QiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkocGx5cikNCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShoZXJlKQ0KbGlicmFyeShnZW9qc29uUikNCmxpYnJhcnkoamFuaXRvcikNCg0KDQojbWV0cm8gPC0gRlJPTV9HZW9Kc29uKGhlcmUoJ2RhdGFfcmF3JywgJ01ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb24nKSkNCm1ldHJpTG9jYXRpb24gPC0gcmVhZC5jc3YoaGVyZSgnZGF0YV9yYXcnLCAnTWV0cm9fU3RhdGlvbnNfUmVnaW9uYWwuY3N2JykpDQptZXRyb1JpZGVycyA8LSByZWFkLmNzdihoZXJlKCdkYXRhX3JhdycsICdCb2FyZGluZ3MgYnkgUm91dGUgVGFibGVfRnVsbCBEYXRhX2RhdGEuY3N2JykpfD4NCiAgcmVsb2NhdGUoRW50cmllcywgLmFmdGVyID0gU3RhdGlvbikNCg0Kc2VwdF9yYXcgPC0gaGVyZSgnZGF0YV9yYXcnLCAnMjAyMzA5LWNhcGl0YWxiaWtlc2hhcmUtdHJpcGRhdGEuY3N2JykNCg0KcmF3YmlrZWRhdGEgPC0gcmVhZC5jc3Yoc2VwdF9yYXcpDQpgYGANCg0KDQojI21ldHJvIGRhdGEgY2xlYW5pbmcNCmBgYHtyfQ0KbWV0cm9SaWRlcnMkVGltZS5QZXJpb2QgPSBOVUxMDQptZXRyb1JpZGVycyREYXkub2YuV2VlayA9IE5VTEwNCm1ldHJvUmlkZXJzJEhvbGlkYXkgPSBOVUxMDQptZXRyb1JpZGVycyRNb250aCA9IE5VTEwNCm1ldHJvUmlkZXJzJFllYXIgPSBOVUxMDQptZXRyb1JpZGVycyRBdmcuRGFpbHkuRW50cmllcy5Sb3VuZGVkID0gTlVMTA0KDQptZXRyb0ZpbHRlciA9IG1ldHJvUmlkZXJzJT4lDQogIGZpbHRlcihTZXJ2aWNldHlwZSA9PSAnV2Vla2RheScpJT4lDQogIGRkcGx5KCJTdGF0aW9uIiwgbnVtY29sd2lzZShzdW0pKQ0KICANCmBgYA0KDQo=</div>
+MetroMap2 &lt;- MetroMap %&gt;%
+  st_join(neigh)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmVpZ2gxID0gbmVpZ2ggJT4lIHNlbGVjdChjb2RlLCBnZW9tZXRyeSlcblxuYmlrZVI0ID0gYmlrZVIzICU+JSBzZWxlY3Qoc3RhcnRfZGF0ZSwgY29kZSwgZ2VvbWV0cnkpICU+JSBzdF9kcm9wX2dlb21ldHJ5KClcblxuYmlrZVI1ID0gbmVpZ2gxICU+JSBmdWxsX2pvaW4oYmlrZVI0KVxuYGBgIn0= -->
+<pre class="r"><code>neigh1 = neigh %&gt;% select(code, geometry)
+
+bikeR4 = bikeR3 %&gt;% select(start_date, code, geometry) %&gt;% st_drop_geometry()
+
+bikeR5 = neigh1 %&gt;% full_join(bikeR4)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3Bsb3QobmVpZ2gpXG5cbmJpa2VSNiA9IGJpa2VSNSAlPiUgZ3JvdXBfYnkoY29kZSlcblxucGxvdChiaWtlUjYpXG5gYGAifQ== -->
+<pre class="r"><code>#plot(neigh)
+
+bikeR6 = bikeR5 %&gt;% group_by(code)
+
+plot(bikeR6)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="mapping-metro" class="section level2">
+<h2>Mapping Metro</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZW50cmFuY2VzPXN0X3JlYWQoaGVyZShcIk1ldHJvX1N0YXRpb25fRW50cmFuY2VzX2luX0RDLmdlb2pzb25cIikpICU+JSBjbGVhbl9uYW1lcygpXG5cbmNsYXNzKGVudHJhbmNlcylcblxucGxvdChlbnRyYW5jZXMpXG5gYGAifQ== -->
+<pre class="r"><code>entrances=st_read(here(&quot;Metro_Station_Entrances_in_DC.geojson&quot;)) %&gt;% clean_names()
+
+class(entrances)
+
+plot(entrances)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="mapping-bike-data" class="section level2">
+<h2>Mapping Bike Data</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQmlrZU1hcCA8LSBzdF9hc19zZihzZXB0X3Jhdyxjb29yZHMgPSBjKFwic3RhcnRfbG5nXCIsXCJzdGFydF9sYXRcIiksIGNycyA9IDQzMjYpXG5cbmNsYXNzKEJpa2VNYXApXG5tYXB2aWV3KEJpa2VNYXApXG5gYGAifQ== -->
+<pre class="r"><code>BikeMap &lt;- st_as_sf(sept_raw,coords = c(&quot;start_lng&quot;,&quot;start_lat&quot;), crs = 4326)
+
+class(BikeMap)
+mapview(BikeMap)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkZpbmFsIFByb2plY3QiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KIyMgUGFja2FnZXMNCmBgYHtyfQ0KbGlicmFyeShwbHlyKQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGhlcmUpDQpsaWJyYXJ5KGdlb2pzb25SKQ0KbGlicmFyeShqYW5pdG9yKQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkobHVicmlkYXRlKSANCmxpYnJhcnkobWFwdmlldykNCmxpYnJhcnkoZ2JmcykNCmxpYnJhcnkoc2YpIA0KbGlicmFyeSh0bWFwKQ0KbGlicmFyeSh0aWR5Y2Vuc3VzKQ0KbGlicmFyeShkcGx5cikNCmxpYnJhcnkoY29uZmxpY3RlZCkNCmNvbmZsaWN0c19wcmVmZXIoaGVyZTo6aGVyZSkNCmNvbmZsaWN0c19wcmVmZXIoZHBseXI6OnJlbmFtZSkNCmNvbmZsaWN0c19wcmVmZXIoZHBseXI6OmZpbHRlcikNCmNvbmZsaWN0c19wcmVmZXIoZHBseXI6Om11dGF0ZSkNCg0KYGBgDQoNCg0KIyMgUmVhZGluZyB0aGUgZmlsZXMuIA0KDQpNZXRybyBTdGF0aW9uIEVudHJhbmNlcyB0byBtYXAgdGhlIGxvY2F0aW9uIG9mIG1ldHJvLCBib2FyZGluZyBkYXRhIHRvIHNob3cgaG93IG1hbnkgcGVvcGxlIGFyZSB1c2luZyB0aGUgbWV0cm8gc3RhdGlvbiwgYW5kIGJpa2VzaGFyZSB0byBzaG93IHRoZSBudW1iZXIgb2YgcGVvcGxlIHJpZGluZyBiaWtlcy4NCg0KQWxsIGRhdGEgaXMgZnJvbSB0aGUgbW9udGggU2VwdGVtYmVyIGJlY2F1c2UgdGhlcmUgYXJlIG5vIG1ham9yIGhvbGlkYXlzLCB0aGUgd2VhdGhlciBpcyBzdGlsbCBkZWNlbnQgZW5vdWdoIGZvciBwZW9wbGUgdG8gcmlkZSBiaWtlcywgYW5kIHRoZSBudW1iZXIgb2YgdG91cmlzdHMvIHBsZWFzdXJlIGJpa2UgcmlkZXJzIGFyZSByZWR1Y2VkLiANCg0KRm9yIHRoZSBwdXJwb3NlIG9mIHRoaXMgcHJvamVjdCwgd2UgcGxhbiBvbiBmb2N1c2luZyBvbiB0aGUgY29tbXV0ZXJzLCBhbmQgcGxhbiBvbiBjcmVhdGluZyBtb3JlIGJpa2UgbG9jYXRpb25zIHRvIGJldHRlciBzdWl0IHRoZSBudW1iZXIgb2YgY29tbXV0ZXJzLg0KYGBge3J9DQptZXRybyA8LSBGUk9NX0dlb0pzb24oaGVyZSgnZGF0YV9yYXcnLCAnTWV0cm9fU3RhdGlvbl9FbnRyYW5jZXNfaW5fREMuZ2VvanNvbicpKQ0KbWV0cm9SaWRlcnMgPC0gcmVhZC5jc3YoaGVyZSgnZGF0YV9yYXcnLCAnQm9hcmRpbmdzIGJ5IFJvdXRlIFRhYmxlX0Z1bGwgRGF0YV9kYXRhLmNzdicpKQ0KbWV0cm9Mb2MgPC0gcmVhZC5jc3YoaGVyZSgnZGF0YV9yYXcnLCAnTWV0cm9fU3RhdGlvbnNfUmVnaW9uYWwuY3N2JykpIA0KDQpzZXB0X3JhdyA8LSByZWFkX2NzdihoZXJlKCdkYXRhX3JhdycsICcyMDIzMDktY2FwaXRhbGJpa2VzaGFyZS10cmlwZGF0YS5jc3YnKSkNCg0KbmVpZ2ggPSBzdF9yZWFkKGhlcmUoImRhdGFfcmF3IiwgIkRDX0hlYWx0aF9QbGFubmluZ19OZWlnaGJvcmhvb2RzLmdlb2pzb24iKSkgJT4lIGNsZWFuX25hbWVzKCkNCg0KYGBgDQoNCiMjIENsZWFuaW5nIERhdGENCg0KVGhpcyBmaWx0ZXJzIHRoZSBkYXRhIHNvIHdlIGFyZSBvbmx5IGdldHRpbmcgZW50cmllcyBmb3IgdGhlIHdlZWtkYXlzIGFuZCBub3QgdGhlIHdlZWtlbmRzLCBhcHBlbmRpbmcgbG9jYXRpb24gdmFyaWFibGVzIHRvIHN0YXRpb24gbmFtZXMsIGFuZCBjb21iaW5pbmcgcmVwZWF0IHN0YXRpb25zIHdpdGggYSBzdW1tZWQgYW1vdW50IG9mIGVudHJpZXMuDQoNCmBgYHtyfQ0KbWV0cm9BZGR5IDwtIHN1YnNldChtZXRyb0xvYywgc2VsZWN0ID0gYyhOQU1FLCBBRERSRVNTLCBYLCBZKSl8Pg0KICByZW5hbWUoIlN0YXRpb24iID0gIk5BTUUiLCAiTG9uIiA9ICJYIiwgIkxhdCIgPSAiWSIpDQoNCm1ldHJvUmlkZXJzJFRpbWUuUGVyaW9kID0gTlVMTA0KbWV0cm9SaWRlcnMkRGF5Lm9mLldlZWsgPSBOVUxMDQptZXRyb1JpZGVycyRIb2xpZGF5ID0gTlVMTA0KbWV0cm9SaWRlcnMkTW9udGggPSBOVUxMDQptZXRyb1JpZGVycyRZZWFyID0gTlVMTA0KbWV0cm9SaWRlcnMkQXZnLkRhaWx5LkVudHJpZXMuUm91bmRlZCA9IE5VTEwNCg0KbWV0cm9SMSA8LSBtZXRyb1JpZGVycyB8Pg0KICBmaWx0ZXIoU2VydmljZXR5cGUgPT0gIldlZWtkYXkiKSB8Pg0KICBkZHBseSgiU3RhdGlvbiIsIG51bWNvbHdpc2Uoc3VtKSkNCg0KTUVUUk8gPC0gbWVyZ2UoeCA9IG1ldHJvUjEsIHkgPSBtZXRyb0FkZHksIGJ5ID0gIlN0YXRpb24iKQ0KDQpnbGltcHNlKE1FVFJPKQ0KDQpgYGANCg0KQ2xlYW5pbmcgYmlrZSBkYXRhDQoNCmBgYHtyfQ0KYmlrZVIxID0gc2VwdF9yYXcgJT4lIHNlbGVjdChzdGFydGVkX2F0LCBzdGFydF9sYXQsIHN0YXJ0X2xuZykgJT4lIG5hLm9taXQoKSAlPiUgbXV0YXRlKHN0YXJ0X2RhdGU9YXMuRGF0ZShzdGFydGVkX2F0KSkgJT4lIHNlbGVjdChzdGFydF9kYXRlLCBzdGFydF9sYXQsIHN0YXJ0X2xuZykNCg0KYmlrZVIyID0gYmlrZVIxICU+JSBzdF9hc19zZihjb29yZHM9Yygic3RhcnRfbG5nIiwgInN0YXJ0X2xhdCIpLCBjcnM9NDMyNikNCg0Kc3RfY3JzKG5laWdoJGdlb21ldHJ5WzFdKQ0KDQpiaWtlUjMgPSBiaWtlUjIgJT4lIHN0X2pvaW4obmVpZ2gpDQoNCg0KIA0KI2NvZGUgZm9yIHBvc3NpYmxlIGZ1dHVyZSBtYXBwaW5nIA0KI2RmMV9zX3NmID0gZGYxX3MgJT4lIHN0X2FzX3NmKGNvb3JkcyA9Yygic3RhcnRfbG5nIiwgInN0YXJ0X2xhdCIpLCBjcnMgPSA0MzI2KQ0KYGBgDQoNCmBgYHtyfQ0KTWV0cm9NYXAgPC0gc3RfYXNfc2YoTUVUUk8sIGNvb3JkcyA9IGMoIkxvbiIsICJMYXQiKSwgY3JzID00MzI2KQ0KDQpNZXRyb01hcDIgPC0gTWV0cm9NYXAgJT4lDQogIHN0X2pvaW4obmVpZ2gpDQpgYGANCg0KYGBge3J9DQpuZWlnaDEgPSBuZWlnaCAlPiUgc2VsZWN0KGNvZGUsIGdlb21ldHJ5KQ0KDQpiaWtlUjQgPSBiaWtlUjMgJT4lIHNlbGVjdChzdGFydF9kYXRlLCBjb2RlLCBnZW9tZXRyeSkgJT4lIHN0X2Ryb3BfZ2VvbWV0cnkoKQ0KDQpiaWtlUjUgPSBuZWlnaDEgJT4lIGZ1bGxfam9pbihiaWtlUjQpDQpgYGANCg0KYGBge3J9DQojcGxvdChuZWlnaCkNCg0KYmlrZVI2ID0gYmlrZVI1ICU+JSBncm91cF9ieShjb2RlKQ0KDQpwbG90KGJpa2VSNikNCmBgYA0KDQoNCiMjIE1hcHBpbmcgTWV0cm8NCg0KYGBge3J9DQplbnRyYW5jZXM9c3RfcmVhZChoZXJlKCJNZXRyb19TdGF0aW9uX0VudHJhbmNlc19pbl9EQy5nZW9qc29uIikpICU+JSBjbGVhbl9uYW1lcygpDQoNCmNsYXNzKGVudHJhbmNlcykNCg0KcGxvdChlbnRyYW5jZXMpDQpgYGANCiMjIE1hcHBpbmcgQmlrZSBEYXRhDQoNCmBgYHtyfQ0KQmlrZU1hcCA8LSBzdF9hc19zZihzZXB0X3Jhdyxjb29yZHMgPSBjKCJzdGFydF9sbmciLCJzdGFydF9sYXQiKSwgY3JzID0gNDMyNikNCg0KY2xhc3MoQmlrZU1hcCkNCm1hcHZpZXcoQmlrZU1hcCkNCmBgYA0KDQo=</div>
 
 
 
