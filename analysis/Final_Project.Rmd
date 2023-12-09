@@ -98,17 +98,10 @@ bikeR3 = bikeR2 %>% st_join(neigh)
 MetroMap <- st_as_sf(METRO, coords = c("Lon", "Lat"), crs =4326)
 
 MetroMap2 <- MetroMap %>%
-  st_join(neigh) %>% na.omit()
+  st_join(neigh) %>% na.omit() %>%
+  ddply("code", numcolwise(sum))
 ```
 
-```{r}
-
-MetroMap <- st_as_sf(METRO, coords = c("Lon", "Lat"), crs =4326)
-
-MetroMap2 <- MetroMap %>%
-  st_join(neigh)%>%
-  na.omit()
-```
 
 ```{r}
 
@@ -184,3 +177,10 @@ METRO |>
 ```
 
 ## How do we plot two different df's at the same time on top of each other?
+
+```{r}
+MBdf <- bind_rows(MetroMap2, bikeR6)
+
+ggplot(MBdf(aes( ))
+```
+
