@@ -4,6 +4,7 @@ output: html_notebook
 ---
 ## Packages
 ```{r}
+library(plyr)
 library(tidyverse)
 library(here)
 library(geojsonR)
@@ -16,6 +17,11 @@ library(sf)
 library(tmap)
 library(tidycensus)
 library(dplyr)
+library(conflicted)
+conflicts_prefer(here::here)
+conflicts_prefer(dplyr::rename)
+conflicts_prefer(dplyr::filter)
+
 ```
 
 
@@ -29,23 +35,39 @@ For the purpose of this project, we plan on focusing on the commuters, and plan 
 ```{r}
 metro <- FROM_GeoJson(here('data_raw', 'Metro_Station_Entrances_in_DC.geojson'))
 metroRiders <- read.csv(here('data_raw', 'Boardings by Route Table_Full Data_data.csv'))
+metroLoc <- read.csv(here('data_raw', 'Metro_Stations_Regional.csv')) 
 
 sept_raw <- read_csv(here('data_raw', '202309-capitalbikeshare-tripdata.csv'))
+<<<<<<< HEAD
 
 neigh = st_read(here("data_raw", "DC_Health_Planning_Neighborhoods.geojson")) %>% clean_names()
+=======
+>>>>>>> 6d92c528e1ffbc0f8d433a41b5f4de93c70c2141
 
 ```
 
 ## Cleaning Data
 
-This filters the data so we are only getting entries for the weekdays and not the weekends.
+This filters the data so we are only getting entries for the weekdays and not the weekends, appending location variables to station names, and combining repeat stations with a summed amount of entries.
 
 ```{r}
+metroAddy <- subset(metroLoc, select = c(NAME, ADDRESS, X, Y))|>
+  rename("Station" = "NAME", "Lon" = "X", "Lat" = "Y")
+
+metroRiders$Time.Period = NULL
+metroRiders$Day.of.Week = NULL
+metroRiders$Holiday = NULL
+metroRiders$Month = NULL
+metroRiders$Year = NULL
+metroRiders$Avg.Daily.Entries.Rounded = NULL
+
 metroR1 <- metroRiders |>
   filter(Servicetype == "Weekday") |>
-  group_by(Station)
+  ddply("Station", numcolwise(sum))
 
-glimpse(metroR1)
+METRO <- merge(x = metroR1, y = metroAddy, by = "Station")
+
+glimpse(METRO)
 
 ```
 
