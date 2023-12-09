@@ -21,10 +21,7 @@ library(conflicted)
 conflicts_prefer(here::here)
 conflicts_prefer(dplyr::rename)
 conflicts_prefer(dplyr::filter)
-<<<<<<< HEAD
 conflicts_prefer(dplyr::mutate)
-=======
->>>>>>> 09ea6b6e1c57e2d6fe9c97a0633bf8c8505ff81f
 
 ```
 
@@ -90,29 +87,28 @@ bikeR3 = bikeR2 %>% st_join(neigh)
 ```
 
 ```{r}
-<<<<<<< HEAD
 MetroMap <- st_as_sf(METRO, coords = c("Lon", "Lat"), crs =4326)
 
 MetroMap2 <- MetroMap %>%
-  st_join(neigh)
+  st_join(neigh) %>% na.omit()
 ```
 
 ```{r}
-=======
->>>>>>> 09ea6b6e1c57e2d6fe9c97a0633bf8c8505ff81f
 neigh1 = neigh %>% select(code, geometry)
 
 bikeR4 = bikeR3 %>% select(start_date, code, geometry) %>% st_drop_geometry()
 
-bikeR5 = neigh1 %>% full_join(bikeR4)
+bikeR5 = neigh1 %>% full_join(bikeR4) %>% filter(start_date != as.Date('2023-09-02')) %>% filter(start_date != as.Date('2023-09-03')) %>% filter(start_date != as.Date('2023-09-09')) %>% filter(start_date != as.Date('2023-09-10')) %>% filter(start_date != as.Date('2023-09-16')) %>% filter(start_date != as.Date('2023-09-17')) %>% filter(start_date != as.Date('2023-09-23')) %>% filter(start_date != as.Date('2023-09-24')) %>% filter(start_date != as.Date('2023-09-30'))
 ```
 
 ```{r}
 #plot(neigh)
 
-bikeR6 = bikeR5 %>% group_by(code)
+bikeR6 = data.frame(table(bikeR5$code)) %>% rename(code=Var1) %>% full_join(bikeR5) %>% select(code, Freq, geometry) %>% distinct() %>% na.omit()
 
-plot(bikeR6)
+bikeR7 = bikeR5 %>% count(code, start_date)
+
+#plot(bikeR6)
 ```
 
 
@@ -128,9 +124,9 @@ plot(entrances)
 ## Mapping Bike Data
 
 ```{r}
-BikeMap <- st_as_sf(sept_raw,coords = c("start_lng","start_lat"), crs = 4326)
+#BikeMap <- st_as_sf(sept_raw,coords = c("start_lng","start_lat"), crs = 4326)
 
-class(BikeMap)
-mapview(BikeMap)
+#class(BikeMap)
+#mapview(BikeMap)
 ```
 
