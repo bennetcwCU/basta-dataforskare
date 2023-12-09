@@ -160,56 +160,10 @@ plot(entrances)
 
 ## Mapping Bike Data
 
-```{r}
-#BikeMap <- st_as_sf(sept_raw,coords = c("start_lng","start_lat"), crs = 4326)
-
-#class(BikeMap)
-#mapview(BikeMap)
-```
 
 ```{r}
-plot(neigh1)
-```
 
-```{r}
-plot(BikeMap)
-```
-
-```{r}
-plot(MetroMap2)
-```
-
-```{r}
-plot(bikeR6)
-```
-
-```{r}
-tm_shape(METRO) +
-  tm_polygons(c("Station","dc_hpn_name"),
-                  alpha=.3,
-          id="name")
-```
-
-```{r}
- METRO |>
-  ggplot(aes(Station,color=Entries)) + geom_density()
-```
-
-```{r}
-METRO |>
-  ggplot(aes(report_dat,y=offense,fill=offense)) + 
-  ggridges::geom_density_ridges(bandwidth = 3600*24*7)  + 
-  theme(legend.position = "none")
-```
-
-## How do we plot two different df's at the same time on top of each other?
-
-```{r}
-#MBdf <- bind_rows(MetroMap2, bikeR6)
-
-#ggplot(MBdf(aes( )
-
-ggplot(metro_bike_df) + geom_bar(x = 'code')
+ggplot(metro_bike_df2, aes(fill=transport, y=freq, x=code)) + geom_bar(position='dodge', stat='identity')
 
 ```
 
