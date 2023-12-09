@@ -2,7 +2,9 @@
 title: "Final Project"
 output: html_notebook
 ---
+
 ## Packages
+
 ```{r}
 library(plyr)
 library(tidyverse)
@@ -21,21 +23,19 @@ library(conflicted)
 conflicts_prefer(here::here)
 conflicts_prefer(dplyr::rename)
 conflicts_prefer(dplyr::filter)
-<<<<<<< HEAD
 conflicts_prefer(dplyr::mutate)
-=======
->>>>>>> 09ea6b6e1c57e2d6fe9c97a0633bf8c8505ff81f
+
 
 ```
 
-
-## Reading the files. 
+## Reading the files.
 
 Metro Station Entrances to map the location of metro, boarding data to show how many people are using the metro station, and bikeshare to show the number of people riding bikes.
 
-All data is from the month September because there are no major holidays, the weather is still decent enough for people to ride bikes, and the number of tourists/ pleasure bike riders are reduced. 
+All data is from the month September because there are no major holidays, the weather is still decent enough for people to ride bikes, and the number of tourists/ pleasure bike riders are reduced.
 
 For the purpose of this project, we plan on focusing on the commuters, and plan on creating more bike locations to better suit the number of commuters.
+
 ```{r}
 metro <- FROM_GeoJson(here('data_raw', 'Metro_Station_Entrances_in_DC.geojson'))
 metroRiders <- read.csv(here('data_raw', 'Boardings by Route Table_Full Data_data.csv'))
@@ -52,6 +52,9 @@ neigh = st_read(here("data_raw", "DC_Health_Planning_Neighborhoods.geojson")) %>
 This filters the data so we are only getting entries for the weekdays and not the weekends, appending location variables to station names, and combining repeat stations with a summed amount of entries.
 
 ```{r}
+## metroLoc = metroLoc |> 
+  ## rename("X" = "ï..X")
+
 metroAddy <- subset(metroLoc, select = c(NAME, ADDRESS, X, Y))|>
   rename("Station" = "NAME", "Lon" = "X", "Lat" = "Y")
 
@@ -61,6 +64,9 @@ metroRiders$Holiday = NULL
 metroRiders$Month = NULL
 metroRiders$Year = NULL
 metroRiders$Avg.Daily.Entries.Rounded = NULL
+
+## metroRiders = metroRiders |>
+ ## rename("Station" = "ï..Station")
 
 metroR1 <- metroRiders |>
   filter(Servicetype == "Weekday") |>
@@ -90,16 +96,16 @@ bikeR3 = bikeR2 %>% st_join(neigh)
 ```
 
 ```{r}
-<<<<<<< HEAD
+
 MetroMap <- st_as_sf(METRO, coords = c("Lon", "Lat"), crs =4326)
 
 MetroMap2 <- MetroMap %>%
-  st_join(neigh)
+  st_join(neigh)%>%
+  na.omit()
 ```
 
 ```{r}
-=======
->>>>>>> 09ea6b6e1c57e2d6fe9c97a0633bf8c8505ff81f
+
 neigh1 = neigh %>% select(code, geometry)
 
 bikeR4 = bikeR3 %>% select(start_date, code, geometry) %>% st_drop_geometry()
@@ -115,7 +121,6 @@ bikeR6 = bikeR5 %>% group_by(code)
 plot(bikeR6)
 ```
 
-
 ## Mapping Metro
 
 ```{r}
@@ -125,6 +130,7 @@ class(entrances)
 
 plot(entrances)
 ```
+
 ## Mapping Bike Data
 
 ```{r}
@@ -134,3 +140,39 @@ class(BikeMap)
 mapview(BikeMap)
 ```
 
+```{r}
+plot(neigh1)
+```
+
+```{r}
+plot(BikeMap)
+```
+
+```{r}
+plot(MetroMap2)
+```
+
+```{r}
+plot(bikeR6)
+```
+
+```{r}
+tm_shape(METRO) +
+  tm_polygons(c("Station","dc_hpn_name"),
+                  alpha=.3,
+          id="name")
+```
+
+```{r}
+ METRO |>
+  ggplot(aes(Station,color=Entries)) + geom_density()
+```
+
+```{r}
+METRO |>
+  ggplot(aes(report_dat,y=offense,fill=offense)) + 
+  ggridges::geom_density_ridges(bandwidth = 3600*24*7)  + 
+  theme(legend.position = "none")
+```
+
+## How do we plot two different df's at the same time on top of each other?
