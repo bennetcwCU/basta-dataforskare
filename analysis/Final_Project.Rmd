@@ -21,7 +21,10 @@ library(conflicted)
 conflicts_prefer(here::here)
 conflicts_prefer(dplyr::rename)
 conflicts_prefer(dplyr::filter)
+<<<<<<< HEAD
 conflicts_prefer(dplyr::mutate)
+=======
+>>>>>>> 09ea6b6e1c57e2d6fe9c97a0633bf8c8505ff81f
 
 ```
 
@@ -87,6 +90,7 @@ bikeR3 = bikeR2 %>% st_join(neigh)
 ```
 
 ```{r}
+<<<<<<< HEAD
 MetroMap <- st_as_sf(METRO, coords = c("Lon", "Lat"), crs =4326)
 
 MetroMap2 <- MetroMap %>%
@@ -94,6 +98,8 @@ MetroMap2 <- MetroMap %>%
 ```
 
 ```{r}
+=======
+>>>>>>> 09ea6b6e1c57e2d6fe9c97a0633bf8c8505ff81f
 neigh1 = neigh %>% select(code, geometry)
 
 bikeR4 = bikeR3 %>% select(start_date, code, geometry) %>% st_drop_geometry()
