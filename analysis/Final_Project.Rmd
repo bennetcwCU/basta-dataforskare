@@ -128,6 +128,26 @@ metro_bike_df = bikeR7 %>% full_join(MetroMap3) %>% mutate(metro_freq = replace_
 #plot(bikeR6)
 ```
 
+```{r}
+bikeR8 = bikeR6 %>% select (code, Freq) %>% rename(freq = Freq) %>% mutate(transport = 'bike')
+
+MetroMap4 = MetroMap2 %>% select(Entries, code) %>% rename(freq = Entries) %>% mutate(transport = 'metro')
+
+code = c("N1", "N10", "N11", "N14", "N15", "N16", "N2", "N20", "N21", "N22", "N26", "N27", "N28", "N3", "N32", "N33", "N34", "N36", "N37", "N4", "N40", "N41", "N45", "N46", "N47", "N49", "N5", "N50", "N51", "N6", "N8")
+
+freq = c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+
+transport = c('metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro', 'metro')
+
+metroExtra = data.frame(code, freq, transport)
+
+MetroMap4 = MetroMap4 %>% rbind(metroExtra)
+
+metro_bike_df2 = bikeR8 %>% full_join(MetroMap4)
+
+```
+
+
 ## Mapping Metro
 
 ```{r}
@@ -185,8 +205,11 @@ METRO |>
 ## How do we plot two different df's at the same time on top of each other?
 
 ```{r}
-MBdf <- bind_rows(MetroMap2, bikeR6)
+#MBdf <- bind_rows(MetroMap2, bikeR6)
 
-ggplot(MBdf(aes( ))
+#ggplot(MBdf(aes( )
+
+ggplot(metro_bike_df) + geom_bar(x = 'code')
+
 ```
 
