@@ -117,6 +117,12 @@ bikeR5 = neigh1 %>% full_join(bikeR4) %>% filter(start_date != as.Date('2023-09-
 
 bikeR6 = data.frame(table(bikeR5$code)) %>% rename(code=Var1) %>% full_join(bikeR5) %>% select(code, Freq, geometry) %>% distinct() %>% na.omit()
 
+bikeR7 = bikeR6 %>% select (code, Freq) %>% rename(bike_freq = Freq)
+
+MetroMap3 = MetroMap2 %>% select(Entries, code) %>% rename(metro_freq = Entries)
+
+metro_bike_df = bikeR7 %>% full_join(MetroMap3) %>% mutate(metro_freq = replace_na(metro_freq, 0))
+
 #bikeR7 = bikeR5 %>% count(code, start_date)
 
 #plot(bikeR6)
