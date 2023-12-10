@@ -84,7 +84,7 @@ bikeR1 is the data set originated from September Bikeshare data. It is filtered 
 
 bikeR2 is a further filtering of bikeR1 where coordinates are added so we can map out the bike riders starting location.
 
-bikeR3 is the new data set where bikeR2 and neigh are joined. 
+bikeR3 is the new data set where bikeR2 and neigh are joined.
 
 ```{r}
 bikeR1 = sept_raw %>% select(started_at, start_lat, start_lng) %>% na.omit() %>% mutate(start_date=as.Date(started_at)) %>% select(start_date, start_lat, start_lng)
@@ -101,10 +101,9 @@ bikeR3 = bikeR2 %>% st_join(neigh)
 #df1_s_sf = df1_s %>% st_as_sf(coords =c("start_lng", "start_lat"), crs = 4326)
 ```
 
-
 ## Metro Map
 
-The first part of this code chunk is converting the metro data frame into a spatial data frame. 
+The first part of this code chunk is converting the metro data frame into a spatial data frame.
 
 MetroMap2 is a filtration of MetroMap that joins the data set "neigh" and omits any null values. Then a variable 'code' is added to the numcolwise. There are 50 'codes' created in this process. Then from those codes, we will determine rideship for both bikes and metro.
 
@@ -115,7 +114,6 @@ MetroMap2 <- MetroMap %>%
   st_join(neigh) %>% na.omit() %>%
   ddply("code", numcolwise(sum))
 ```
-
 
 ## More Filtering
 
@@ -133,11 +131,12 @@ bikeR4 = bikeR3 %>% select(start_date, code, geometry) %>% st_drop_geometry()
 
 bikeR5 = neigh1 %>% full_join(bikeR4) %>% filter(start_date != as.Date('2023-09-02')) %>% filter(start_date != as.Date('2023-09-03')) %>% filter(start_date != as.Date('2023-09-09')) %>% filter(start_date != as.Date('2023-09-10')) %>% filter(start_date != as.Date('2023-09-16')) %>% filter(start_date != as.Date('2023-09-17')) %>% filter(start_date != as.Date('2023-09-23')) %>% filter(start_date != as.Date('2023-09-24')) %>% filter(start_date != as.Date('2023-09-30'))
 ```
+
 ## And More!
 
 bikeR6 is a nre data frame where we took the bike data from set bikeR5. bikeR6 has 51 codes and they are listed as observations. All null values are ommitted.
 
-bikeR7 takes the data from bikeR6 and keeps the code as well as frequency and renames it to bike_freq. 
+bikeR7 takes the data from bikeR6 and keeps the code as well as frequency and renames it to bike_freq.
 
 ```{r}
 #plot(neigh)
@@ -154,9 +153,10 @@ metro_bike_df = bikeR7 %>% full_join(MetroMap3) %>% mutate(metro_freq = replace_
 
 #plot(bikeR6)
 ```
+
 ## Last One!
 
-bikeR8 takes bikeR6 and keeps the code and frequency. It also creates a column called bike because all the data in this set is from bike riders. We will use this column later when we make our visual. 
+bikeR8 takes bikeR6 and keeps the code and frequency. It also creates a column called bike because all the data in this set is from bike riders. We will use this column later when we make our visual.
 
 MetroMap4 continues the filtration of MetroMap2 where entries (later renamed to freq) and code are kept. Every data in this set is given the variable 'metro' as they represent a metro rider.
 
@@ -179,7 +179,6 @@ metro_bike_df2 = bikeR8 %>% full_join(MetroMap4)
 
 ```
 
-
 ## Mapping Metro
 
 This is a simple visual of the metro station locations in DC.
@@ -194,7 +193,7 @@ plot(entrances)
 
 ## Mapping Bike Data
 
-We create a gg plot of the data from above. The combined data set of metro and bike riders (metro_bike_df2). We wanted to visualize the number of people who are riding the metro vs using bikes in each of the 'codes'. 
+We create a gg plot of the data from above. The combined data set of metro and bike riders (metro_bike_df2). We wanted to visualize the number of people who are riding the metro vs using bikes in each of the 'codes'.
 
 ```{r}
 charts <- ggplot(metro_bike_df2, aes(fill=transport, y=freq, x=code)) + geom_bar(position='dodge', stat='identity')
@@ -202,5 +201,6 @@ charts <- ggplot(metro_bike_df2, aes(fill=transport, y=freq, x=code)) + geom_bar
 ggplotly(charts)
 ```
 
-## Recommednation:
-Based on the data comparisons of metro entries and bike entries, we would recommend that the bikeshare group look into increasing the amount of bike stations in neighborhoods: n2, n5, n22, n28, n41 as these are the neighborhoods with no metro stations being entered and already have a solid group of bike riders, so increasing stations here would allow ofr the most benefits for the bikeshare.
+## Recommendation:
+
+Based on the data comparisons of metro entries and bike entries, we would recommend that the bike-share group look into increasing the amount of bike stations in neighborhoods: n2, n5, n22, n28, n41 as these are the neighborhoods with no metro stations being entered and already have a solid group of bike riders, so increasing stations here would allow for the most benefits for the bike-share.
