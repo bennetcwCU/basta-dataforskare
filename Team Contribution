@@ -1,0 +1,24 @@
+Team Contribution Notebook for Final Project
+Team: Matt Bell, Evan Ittleson, Cole Bennett, Avery Shoemaker
+
+The Question: What is the preferred method of transportation for residents in each district in the DC area? 
+From there we wanted to see where the bike stations were in relation to other transportation options, and add in bike options where people may be walking from the bus, etc to their place of work. 
+We are looking into the working class, as compared to tourists and leisure bike riding.
+Increasing accessibility of bikes where there are other forms of transportation.
+Import datasets with info on trains and busses
+Look at each community, and determine/rank the most popular transportation method from 1-3 between bikes, metro and bus.
+
+Main Assumptions:
+
+When choosing the month to analyze, our team chose September because it is outside of peak tourism season, people are back to work/ school, there are no major holidays, and the weather is still decent enough to ride bikes.
+Other assumptions were that there is a morning rush and evening rush from work, and data will only be used during the week (excludes weekends) to show commuters.
+We assume that if there is a bike station near a metro station, ridership would increase. 
+
+Work: 
+
+Every member was tasked to brainstorm and think of solutions to the question.
+Additionally, every member looked for viable data sources that could be used in the project.
+From there, it was a collective process to filter and tidy the data.
+Each of the members made at least one commit with code that contributed to the overall project.
+
+
