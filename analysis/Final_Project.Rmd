@@ -20,6 +20,7 @@ library(tmap)
 library(tidycensus)
 library(dplyr)
 library(conflicted)
+library(plotly)
 conflicts_prefer(here::here)
 conflicts_prefer(dplyr::rename)
 conflicts_prefer(dplyr::filter)
@@ -51,8 +52,8 @@ neigh = st_read(here("data_raw", "DC_Health_Planning_Neighborhoods.geojson")) %>
 This filters the data so we are only getting entries for the weekdays and not the weekends, appending location variables to station names, and combining repeat stations with a summed amount of entries.
 
 ```{r}
-## metroLoc = metroLoc |> 
-  ## rename("X" = "ï..X")
+#metroLoc = metroLoc |> 
+  #rename("X" = "ï..X")
 
 metroAddy <- subset(metroLoc, select = c(NAME, ADDRESS, X, Y))|>
   rename("Station" = "NAME", "Lon" = "X", "Lat" = "Y")
@@ -64,8 +65,8 @@ metroRiders$Month = NULL
 metroRiders$Year = NULL
 metroRiders$Avg.Daily.Entries.Rounded = NULL
 
-## metroRiders = metroRiders |>
- ## rename("Station" = "ï..Station")
+#metroRiders = metroRiders |>
+ #rename("Station" = "ï..Station")
 
 metroR1 <- metroRiders |>
   filter(Servicetype == "Weekday") |>
@@ -196,8 +197,8 @@ plot(entrances)
 We create a gg plot of the data from above. The combined data set of metro and bike riders (metro_bike_df2). We wanted to visualize the number of people who are riding the metro vs using bikes in each of the 'codes'. 
 
 ```{r}
+charts <- ggplot(metro_bike_df2, aes(fill=transport, y=freq, x=code)) + geom_bar(position='dodge', stat='identity')
 
-ggplot(metro_bike_df2, aes(fill=transport, y=freq, x=code)) + geom_bar(position='dodge', stat='identity')
-
+ggplotly(charts)
 ```
 
