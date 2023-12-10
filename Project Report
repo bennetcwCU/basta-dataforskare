@@ -1,2 +1,38 @@
 Poject Report - De Bästa Datafoskare!
+Matthew Bell, Cole Bennett, Evan Ittleson, Avery Shoemaker
+
+The focus of this project is the brainstorm a way to increase bike ridership in Dc.
+
+Our group decided to look at the methods of transportation that commuters were taking.
+The main objective was to compare the metro ridership in the different neighborhood codes to the
+bike ridership in the corresponding codes. 
+
+The first assumption our group had to make was what month we would be taking data from.
+September seems reasonable because people would be back to school and work.
+Additionally, there are no major holidays and the weather is still decent for people to be riding bikes.
+Tourism in September is not as high as it is during summer, and life is relativly normal.
+
+The first step in the project was finding data that would be useful to the question.
+The data sets we found useful were: 
+  -Metro_stattion_entrances: this data shows where all the entrances to the metro station are
+  -Metro_stations_regional: this set gives the count and times of people riding the metro
+  -202309_capitalbikeshar-tripdata: this set is the data on bike ridership
+  -DC_health_planning_neighborhoods: gives the neighbothoods of DC
+
+Once all data sets are loaded into R, we were tasking with cleaning the data to the variables desired.
+We knew we wanted the locations, number of people, time of day, and form of transportation of the commuters.
+So to keep all this data, packages such as plyr, tidyverse, janitor, lubrudate, and dplyr were used.
+Functions such as mutate and filter were the most useful when cleaning our data.
+Assuptions for commuters were made that we would only keep data from weekdays.
+
+After the data was filtered to the desired size, we were tasked to join the data sets to compare.
+
+Finally, a visual was created to compare bike riders and metro riders. 
+We then drew the conclusion that bike ridership can be increased if there were more stations
+located in areas where there little to no metro stations, but a good amount of people taking the metro.
+This is due to the fact that there is a "last mile" effect occuring. Many people will take the metro 
+to as close to their place of work as possible, but then they will need to walk from the metro
+to their work. By adding more bike stations in these areas, commuters will be able to finish
+their commute via bike instead of by foot. 
+
 
