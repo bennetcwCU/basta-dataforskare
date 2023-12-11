@@ -1,16 +1,16 @@
 Poject Report - De Bästa Datafoskare!
 Matthew Bell, Cole Bennett, Evan Ittleson, Avery Shoemaker
 
-The focus of this project is the brainstorm a way to increase bike ridership in Dc.
+The focus of this project was to brainstorm a way to increase bike ridership in DC.
 
 Our group decided to look at the methods of transportation that commuters were taking.
 The main objective was to compare the metro ridership in the different neighborhood codes to the
 bike ridership in the corresponding codes. 
 
 The first assumption our group had to make was what month we would be taking data from.
-September seems reasonable because people would be back to school and work.
-Additionally, there are no major holidays and the weather is still decent for people to be riding bikes.
-Tourism in September is not as high as it is during summer, and life is relativly normal.
+September seemed reasonable because people would be back to school and work.
+Additionally there are no major holidays, and the weather is still decent for people to be out riding bikes.
+Tourism in September is present, but winding down compared to the summer peak. Life is relativly normal.
 
 The first step in the project was finding data that would be useful to the question.
 The data sets we found useful were: 
@@ -23,16 +23,30 @@ Once all data sets are loaded into R, we were tasking with cleaning the data to 
 We knew we wanted the locations, number of people, time of day, and form of transportation of the commuters.
 So to keep all this data, packages such as plyr, tidyverse, janitor, lubrudate, and dplyr were used.
 Functions such as mutate and filter were the most useful when cleaning our data.
-Assuptions for commuters were made that we would only keep data from weekdays.
 
-After the data was filtered to the desired size, we were tasked to join the data sets to compare.
+Since we were mainly concerned with analyzing commuter usage, we made the assumption that regular utilizers of
+the bikeshare would mainly use it during the working week.
+So, we deemed it appropriate to exclude the data from weekends.
+
+After the data was filtered to the desired size, we were tasked to join the data sets to compare. 
+It was a bit tricky, and the group struggled for quite a while on this... 
+But, eventually with enough collective grit, we figured it out and were able to start visualizing!
 
 Finally, a visual was created to compare bike riders and metro riders. 
-We then drew the conclusion that bike ridership can be increased if there were more stations
-located in areas where there little to no metro stations, but a good amount of people taking the metro.
-This is due to the fact that there is a "last mile" effect occuring. Many people will take the metro 
-to as close to their place of work as possible, but then they will need to walk from the metro
-to their work. By adding more bike stations in these areas, commuters will be able to finish
-their commute via bike instead of by foot. 
+From that visual, we drew the conclusion that: "Bike ridership can be increased if there were more bike stations
+located in areas where there are little-to-no metro stations currently." 
 
+This was because we observed that regardless of bike station availability, in any area with a Metro Station, it 
+was BY FAR the most popular choice for transportation.
 
+This recomendation is based off the assumption that a "last mile" effect is occuring for majority of Metro riders.
+Many people will take the metro to a station as close to their place of work as possible. However, once they get off, 
+they still need to walk from the metro station to their place of work. 
+  (***Important Note: This IS an assumption being made based off of "common sense", so we cannot say FOR SURE 
+  if this is occuring with most metro riders, without a further analysis... but for the sake of this project, it 
+  seemed like a fair assumption to make.***)
+
+Particularly, we identified neighborhoods n2, n5, n22, n28, n41, as the most ideal to target first. These are the 
+neighborhoods with minimal metro stations around, that ALSO have a solid quantity of exisiting users (at least based 
+on September). So, by adding more bike stations in these 5 areas, commuters will be more likely to finish their commute 
+via bike instead of foot, which would result in increased DC Bikeshare ridership! 
